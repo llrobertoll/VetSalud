@@ -181,14 +181,14 @@ body.mode-admin .bottom-nav,body.mode-auth .bottom-nav{display:none}
 <!-- ============ SIDEBAR ADMIN ============ -->
 <aside class="sidebar">
   <div class="sb-logo"><svg class="paw" viewBox="0 0 64 64" fill="currentColor"><ellipse cx="20" cy="16" rx="7" ry="9"/><ellipse cx="44" cy="16" rx="7" ry="9"/><ellipse cx="8" cy="30" rx="6" ry="8"/><ellipse cx="56" cy="30" rx="6" ry="8"/><path d="M32 26c-10 0-20 11-20 20 0 6 5 9 10 9 4 0 7-2 10-2s6 2 10 2c5 0 10-3 10-9 0-9-10-20-20-20z"/></svg><b>VetSalud</b></div>
-  <button class="sb-item" data-s="adminDashboard" onclick="go('adminDashboard')">📊 <span class="lbl">Dashboard</span></button>
-  <button class="sb-item" data-s="adminCitas" onclick="go('adminCitas')">📅 <span class="lbl">Citas</span></button>
-  <button class="sb-item" data-s="adminDia" onclick="go('adminDia')">🕒 <span class="lbl">Citas del Día</span></button>
-  <button class="sb-item" data-s="adminClientes" onclick="go('adminClientes')">👥 <span class="lbl">Clientes</span></button>
-  <button class="sb-item" data-s="adminMascotas" onclick="go('adminMascotas')">🐾 <span class="lbl">Mascotas</span></button>
-  <button class="sb-item" data-s="adminReportes" onclick="go('adminReportes')">📈 <span class="lbl">Reportes</span></button>
+  <button class="sb-item" data-s="adminDashboard" onclick="go('adminDashboard')"><img src="imagenes/resumen.webp" alt="resumen" width="20" height="20"> <span class="lbl">Dashboard</span></button>
+  <button class="sb-item" data-s="adminCitas" onclick="go('adminCitas')"><img src="imagenes/calendario.png" alt="calendario" width="20" height="20"> <span class="lbl">Citas</span></button>
+  <button class="sb-item" data-s="adminDia" onclick="go('adminDia')"><img src="imagenes/historial2.png" alt="reloj" width="20" height="20"> <span class="lbl">Citas del Día</span></button>
+  <button class="sb-item" data-s="adminClientes" onclick="go('adminClientes')"><img src="imagenes/clientes.png" alt="clientes" width="20" height="20"> <span class="lbl">Clientes</span></button>
+  <button class="sb-item" data-s="adminMascotas" onclick="go('adminMascotas')"><img src="imagenes/mascotas.png" alt="mascotas" width="20" height="20"> <span class="lbl">Mascotas</span></button>
+  <button class="sb-item" data-s="adminReportes" onclick="go('adminReportes')"><img src="imagenes/informe.png" alt="reportes" width="20" height="20"> <span class="lbl">Reportes</span></button>
   <div class="sb-spacer"></div>
-  <button class="sb-item" onclick="logout()">🚪 <span class="lbl">Cerrar Sesión</span></button>
+  <button class="sb-item" onclick="logout()"><img src="imagenes/salir.png" alt="cerrar sesion" width="16" height="16"> <span class="lbl">Cerrar Sesión</span></button>
 </aside>
 
 <main id="main">
@@ -241,17 +241,17 @@ body.mode-admin .bottom-nav,body.mode-auth .bottom-nav{display:none}
     <div class="home-head">
       <div class="avatar" id="home-avatar">A</div>
       <strong id="home-hello">¡Hola!</strong>
-      <button class="backbtn" title="Cerrar sesión" onclick="logout()">🚪</button>
+      <button class="backbtn" title="Cerrar sesión" onclick="logout()"><img src="imagenes/salir.png" alt="salir" width="16" height="16"></button>
     </div>
-    <div class="banner"><span>El mejor cuidado<br>para tu mejor amigo</span><img src="mascotas.avif" alt="" onerror="this.outerHTML='<span style=&quot;font-size:40px&quot;>🐶🐱</span>'"></div>
+    <div class="banner"><span>El mejor cuidado<br>para tu mejor amigo</span><img src="imagenes/mascotas.avif" alt="" onerror="this.outerHTML='<span style=&quot;font-size:40px&quot;>🐶🐱</span>'"></div>
     <h2 class="sec-title">¿Qué deseas hacer?</h2>
     <div class="grid-menu">
-      <button class="menu-card" onclick="goAgendar()"><span class="ic">📅</span>Agendar Cita</button>
-      <button class="menu-card" onclick="go('miscitas')"><span class="ic">🗓️</span>Mis Citas</button>
-      <button class="menu-card" onclick="go('perfil')"><span class="ic">🐾</span>Mis Mascotas</button>
-      <button class="menu-card" onclick="go('historial')"><span class="ic">🕒</span>Historial</button>
-      <button class="menu-card" onclick="go('editarCliente')"><span class="ic">👤</span>Perfil</button>
-      <button class="menu-card" onclick="openContact()"><span class="ic">📞</span>Contacto</button>
+      <button class="menu-card" onclick="goAgendar()"><span class="ic"><img src="imagenes/calendario.png" alt="calendario" width="20" height="20"></span>Agendar Cita</button>
+      <button class="menu-card" onclick="go('miscitas')"><span class="ic"><img src="imagenes/calendario.png" alt="calendario" width="20" height="20"></span>Mis Citas</button>
+      <button class="menu-card" onclick="go('perfil')"><span class="ic"><img src="imagenes/guellaN.png" alt="pawprint" width="20" height="20"></span>Mis Mascotas</button>
+      <button class="menu-card" onclick="go('historial')"><span class="ic"><img src="imagenes/historial2.png" alt="history" width="20" height="20"></span>Historial</button>
+      <button class="menu-card" onclick="go('editarCliente')"><span class="ic"><img src="imagenes/perfil.png" alt="profile" width="20" height="20"></span>Perfil</button>
+      <button class="menu-card" onclick="openContact()"><span class="ic"><img src="imagenes/telefono.png" alt="phone" width="20" height="20"></span>Contacto</button>
     </div>
   </div>
 </section>
@@ -411,10 +411,10 @@ body.mode-admin .bottom-nav,body.mode-auth .bottom-nav{display:none}
   <div class="wrap">
     <h1 class="adm-title">Dashboard · Resumen General</h1>
     <div class="stats">
-      <div class="stat"><div class="ic">📅</div><div class="num" id="ad-dia" style="color:var(--blue-tx)">0</div><small>Citas del día</small></div>
-      <div class="stat"><div class="ic">⏳</div><div class="num" id="ad-pend" style="color:var(--orange-tx)">0</div><small>Citas pendientes</small></div>
-      <div class="stat"><div class="ic">👥</div><div class="num" id="ad-cli" style="color:var(--teal)">0</div><small>Clientes registrados</small></div>
-      <div class="stat"><div class="ic">🐾</div><div class="num" id="ad-mas" style="color:var(--green-tx)">0</div><small>Mascotas registradas</small></div>
+      <div class="stat"><div class="ic"><img src="imagenes/calendario.png" alt="calendario" width="20" height="20"></div><div class="num" id="ad-dia" style="color:var(--blue-tx)">0</div><small>Citas del día</small></div>
+      <div class="stat"><div class="ic"><img src="imagenes/pendientes.jpg" alt="reloj" width="20" height="20"></div><div class="num" id="ad-pend" style="color:var(--orange-tx)">0</div><small>Citas pendientes</small></div>
+      <div class="stat"><div class="ic"><img src="imagenes/clientes.png" alt="clientes" width="20" height="20"></div><div class="num" id="ad-cli" style="color:var(--teal)">0</div><small>Clientes registrados</small></div>
+      <div class="stat"><div class="ic"><img src="imagenes/mascotas.png" alt="mascotas" width="20" height="20"></div><div class="num" id="ad-mas" style="color:var(--green-tx)">0</div><small>Mascotas registradas</small></div>
     </div>
     <div class="card">
       <h2 style="font-size:.95rem;font-weight:900;margin-bottom:10px">Citas del día</h2>
@@ -487,11 +487,11 @@ body.mode-admin .bottom-nav,body.mode-auth .bottom-nav{display:none}
 
 <!-- NAV INFERIOR CLIENTE -->
 <nav class="bottom-nav">
-  <button class="bn-item" data-nav="inicio" onclick="go('home')"><span class="ic">🏠</span>Inicio</button>
-  <button class="bn-item" data-nav="citas" onclick="go('miscitas')"><span class="ic">📅</span>Citas</button>
-  <button class="bn-center" onclick="goAgendar()">🐾</button>
-  <button class="bn-item" data-nav="mascotas" onclick="go('perfil')"><span class="ic">🐶</span>Mascotas</button>
-  <button class="bn-item" data-nav="perfil" onclick="go('editarCliente')"><span class="ic">👤</span>Perfil</button>
+  <button class="bn-item" data-nav="inicio" onclick="go('home')"><span class="ic"><img src="imagenes/casa.png" alt="casa" width="20" height="20"></span>Inicio</button>
+  <button class="bn-item" data-nav="citas" onclick="go('miscitas')"><span class="ic"><img src="imagenes/calendario.png" alt="calendario" width="20" height="20"></span>Citas</button>
+  <button class="bn-center" onclick="goAgendar()"><img src="imagenes/huella.png" alt="mascotas" width="20" height="20"></button>
+  <button class="bn-item" data-nav="mascotas" onclick="go('perfil')"><span class="ic"><img src="imagenes/guellaN.png" alt="mascotas" width="20" height="20"></span>Mascotas</button>
+  <button class="bn-item" data-nav="perfil" onclick="go('editarCliente')"><span class="ic"><img src="imagenes/perfil.png" alt="perfil" width="20" height="20"></span>Perfil</button>
 </nav>
 
 <!-- MODAL CONTACTO -->
