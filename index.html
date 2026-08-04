@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VetSalud — Cuidado que ellos merecen</title>
+<style>
+:root{
+  --teal:#0f766e; --teal-dark:#115e59; --teal-darker:#123f3c; --teal-light:#ccfbf1;
+  --bg:#f6f8fa; --card:#fff; --text:#1e293b; --muted:#64748b; --border:#e2e8f0;
+  --blue-bg:#dbeafe; --blue-tx:#1d4ed8; --orange-bg:#ffedd5; --orange-tx:#c2410c;
+  --red-bg:#fee2e2; --red-tx:#b91c1c; --green-bg:#dcfce7; --green-tx:#15803d;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text)}
+button{font:inherit;cursor:pointer}
+.screen{display:none;min-height:100vh;padding-bottom:96px}
+.screen.active{display:block}
+.wrap{max-width:520px;margin:0 auto;padding:16px}
+.wrap.narrow{max-width:420px}
+.center{text-align:center}
+.empty{color:var(--muted);text-align:center;padding:24px 0;font-size:.9rem}
+
+/* ---------- topbar ---------- */
+.topbar{display:flex;align-items:center;gap:10px;padding:6px 0 16px}
+.topbar h1{font-size:1.02rem;font-weight:800;flex:1;text-align:center;margin-right:40px}
+.backbtn{width:38px;height:38px;border:none;background:#fff;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,.12);font-size:17px}
+
+/* ---------- botones ---------- */
+.btn{display:block;width:100%;background:var(--teal);color:#fff;border:none;border-radius:12px;padding:13px;font-size:.95rem;font-weight:700;margin-top:10px}
+.btn:active{transform:scale(.98)}
+.btn-outline{background:#fff;color:var(--teal);border:1.6px solid var(--teal)}
+.btn-danger{background:#fff;color:var(--red-tx);border:1.6px solid #fca5a5}
+.btn.mini{width:auto;display:inline-block;padding:7px 12px;font-size:.72rem;margin:0;border-radius:9px}
+.icon-btn{border:none;border-radius:8px;width:28px;height:28px;font-size:.8rem;font-weight:800}
+.icon-btn.ok{background:var(--green-bg);color:var(--green-tx)}
+.icon-btn.bad{background:var(--red-bg);color:var(--red-tx)}
+
+/* ---------- campos ---------- */
+.field{margin-bottom:12px;text-align:left}
+.field label{font-size:.78rem;font-weight:700;color:var(--muted);display:block;margin-bottom:6px}
+.input,.select,.textarea{width:100%;border:1.5px solid var(--border);border-radius:12px;padding:11px 12px;font:inherit;background:#fff;color:var(--text)}
+.input:focus,.select:focus,.textarea:focus{border-color:var(--teal);outline:none}
+.textarea{min-height:74px;resize:vertical}
+.row2{display:flex;gap:10px}.row2 .field{flex:1}
+
+/* ---------- tarjetas / chips ---------- */
+.card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:14px;margin-bottom:10px}
+.card.row{display:flex;gap:12px;align-items:center;text-align:left}
+.chip{padding:4px 10px;border-radius:999px;font-size:.68rem;font-weight:800;white-space:nowrap}
+.chip.confirmada{background:var(--blue-bg);color:var(--blue-tx)}
+.chip.pendiente{background:var(--orange-bg);color:var(--orange-tx)}
+.chip.cancelada{background:var(--red-bg);color:var(--red-tx)}
+.chip.finalizada{background:var(--green-bg);color:var(--green-tx)}
+
+/* ---------- listas ---------- */
+.list-item{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--border);border-radius:16px;padding:12px;margin-bottom:10px;cursor:pointer}
+.li-avatar{width:46px;height:46px;border-radius:50%;background:#f1f5f9;display:flex;align-items:center;justify-content:center;font-size:23px;overflow:hidden;flex-shrink:0}
+.li-avatar img{width:100%;height:100%;object-fit:cover}
+.li-main{flex:1;min-width:0}
+.li-title{font-weight:800;font-size:.92rem}
+.li-sub{font-size:.76rem;color:var(--muted);margin-top:2px}
+.li-meta{font-size:.73rem;color:var(--muted);display:flex;gap:10px;margin-top:5px;flex-wrap:wrap}
+.chev{color:#cbd5e1;font-size:1.2rem}
+
+/* ---------- splash / auth ---------- */
+.splash{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:linear-gradient(#effbf9,#fff);padding:24px;text-align:center}
+.paw{width:86px;height:86px;color:var(--teal)}
+.splash h1{color:var(--teal);font-size:2.1rem;font-weight:900}
+.splash p{color:var(--muted)}
+.splash-hero{margin:20px 0}
+.splash-hero img{width:280px;max-width:82%;border-radius:18px}
+.emo{font-size:64px}
+.auth-head{display:flex;flex-direction:column;align-items:center;gap:4px;padding:26px 0 22px}
+.auth-head .paw{width:56px;height:56px}
+.auth-head h1{color:var(--teal);font-size:1.4rem;font-weight:900}
+.auth-head p{color:var(--muted);font-size:.85rem}
+.link-row{text-align:center;margin-top:14px;font-size:.83rem;color:var(--muted)}
+.link-row a{color:var(--teal);font-weight:800;cursor:pointer}
+.demo-box{margin-top:18px;background:var(--teal-light);border-radius:12px;padding:10px;font-size:.72rem;color:var(--teal-dark);text-align:center}
+
+/* ---------- home ---------- */
+.home-head{display:flex;align-items:center;gap:12px;padding:8px 0 14px}
+.avatar{width:44px;height:44px;border-radius:50%;background:var(--teal);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900}
+.home-head strong{flex:1}
+.banner{background:linear-gradient(120deg,var(--teal),#14b8a6);color:#fff;border-radius:16px;padding:16px;font-weight:800;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.banner img{width:86px;border-radius:12px}
+.sec-title{font-size:1rem;font-weight:900;margin:18px 0 12px}
+.grid-menu{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.menu-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:18px 10px;display:flex;flex-direction:column;align-items:center;gap:8px;font-weight:800;font-size:.82rem;color:var(--text)}
+.menu-card .ic{font-size:26px}
+.menu-card:active{transform:scale(.97)}
+
+/* ---------- pasos ---------- */
+.steps{display:flex;align-items:center;justify-content:center;gap:8px;margin:6px 0 18px}
+.step{width:30px;height:30px;border-radius:50%;border:2px solid var(--border);background:#fff;color:var(--muted);display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:800}
+.step.on{background:var(--teal);border-color:var(--teal);color:#fff}
+.steps i{width:26px;height:2px;background:var(--border)}
+
+/* ---------- confirmar ---------- */
+.big-check{width:86px;height:86px;border-radius:50%;background:var(--teal);color:#fff;font-size:40px;display:flex;align-items:center;justify-content:center;margin:26px auto 16px;box-shadow:0 8px 24px rgba(15,118,110,.35)}
+
+/* ---------- tabs ---------- */
+.tabs{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;padding-bottom:2px}
+.tab{padding:7px 13px;border-radius:999px;border:1px solid var(--border);background:#fff;font-size:.74rem;font-weight:800;color:var(--muted);white-space:nowrap}
+.tab.active{background:var(--teal);color:#fff;border-color:var(--teal)}
+
+/* ---------- detalle ---------- */
+.det-head{display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:14px}
+.det-head .li-avatar{width:76px;height:76px;font-size:38px}
+.det-row{display:flex;justify-content:space-between;gap:12px;padding:10px 2px;border-bottom:1px solid var(--border);font-size:.85rem}
+.det-row span{color:var(--muted)}
+
+/* ---------- perfil ---------- */
+.pf-card{background:linear-gradient(120deg,var(--teal),#0d9488);color:#fff;border-radius:16px;padding:16px;display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.pf-card .avatar{background:#ffffff33}
+.pf-card strong{display:block}
+.pf-card small{opacity:.85}
+.pf-edit{margin-left:auto;background:#ffffff22;border:none;color:#fff;border-radius:8px;padding:6px 10px;font-weight:700;font-size:.72rem}
+.sec-row{display:flex;align-items:center;justify-content:space-between;margin:14px 0 10px}
+.sec-row h2{font-size:1rem;font-weight:900}
+.plus{width:30px;height:30px;border-radius:50%;background:var(--teal);color:#fff;border:none;font-size:16px;font-weight:900}
+.foto-pick{display:flex;flex-direction:column;align-items:center;gap:6px;margin-bottom:14px}
+.foto-pick .li-avatar{width:84px;height:84px;font-size:40px;position:relative}
+.foto-pick small{color:var(--muted)}
+
+/* ---------- admin ---------- */
+.sidebar{display:none}
+body.mode-admin .sidebar{display:flex;position:fixed;left:0;top:0;bottom:0;width:225px;background:var(--teal-darker);color:#fff;flex-direction:column;padding:14px;gap:4px;z-index:50}
+body.mode-admin #main{margin-left:225px}
+body.mode-admin .screen{padding-bottom:30px}
+body.mode-admin .wrap{max-width:1020px}
+.sb-logo{display:flex;align-items:center;gap:8px;font-weight:900;font-size:1.05rem;padding:8px 10px 18px}
+.sb-logo .paw{width:26px;height:26px;color:#5eead4}
+.sb-item{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:10px;color:#b9c9c7;background:none;border:none;font-weight:700;font-size:.86rem;text-align:left}
+.sb-item.active,.sb-item:hover{background:var(--teal);color:#fff}
+.sb-spacer{flex:1}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:14px 0}
+.stat{background:#fff;border:1px solid var(--border);border-radius:16px;padding:16px;text-align:center}
+.stat .ic{font-size:22px}
+.stat .num{font-size:1.7rem;font-weight:900;margin:4px 0}
+.stat small{color:var(--muted);font-weight:700}
+.table-wrap{overflow-x:auto;background:#fff;border:1px solid var(--border);border-radius:16px}
+.table{width:100%;border-collapse:collapse;font-size:.8rem;min-width:640px}
+.table th{background:#f1f5f9;text-align:left;padding:11px 12px;font-weight:800}
+.table td{padding:10px 12px;border-top:1px solid var(--border)}
+.acts{display:flex;gap:6px}
+.pages{display:flex;gap:6px;justify-content:center;margin-top:14px}
+.page-btn{min-width:32px;height:32px;border-radius:9px;border:1px solid var(--border);background:#fff;font-weight:800}
+.page-btn.active{background:var(--teal);color:#fff;border-color:var(--teal)}
+.filters{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.filters .input,.filters .select{width:auto;flex:1;min-width:150px}
+.adm-title{font-size:1.15rem;font-weight:900;padding:6px 0}
+
+/* ---------- nav inferior ---------- */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--border);display:flex;justify-content:space-around;align-items:center;padding:8px 6px calc(8px + env(safe-area-inset-bottom));z-index:40}
+body.mode-admin .bottom-nav,body.mode-auth .bottom-nav{display:none}
+.bn-item{border:none;background:none;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:.64rem;color:var(--muted);font-weight:800}
+.bn-item .ic{font-size:19px}
+.bn-item.active{color:var(--teal)}
+.bn-center{width:54px;height:54px;border-radius:50%;background:var(--teal);color:#fff;display:flex;align-items:center;justify-content:center;border:none;margin-top:-28px;box-shadow:0 5px 14px rgba(15,118,110,.45);font-size:22px}
+
+/* ---------- modal / toast ---------- */
+.modal{position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;z-index:100;padding:20px}
+.modal.show{display:flex}
+.modal-card{background:#fff;border-radius:18px;padding:22px;max-width:400px;width:100%}
+.modal-card h3{margin-bottom:10px}
+.modal-card p{font-size:.86rem;color:var(--muted);margin-bottom:6px}
+#toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(16px);background:#111827;color:#fff;padding:10px 20px;border-radius:999px;opacity:0;transition:.3s;z-index:120;font-weight:700;font-size:.85rem;pointer-events:none}
+#toast.show{opacity:1;transform:translateX(-50%)}
+
+@media(max-width:900px){
+  body.mode-admin .sidebar{width:64px;padding:10px 8px}
+  body.mode-admin .sidebar .lbl,body.mode-admin .sb-logo b{display:none}
+  body.mode-admin #main{margin-left:64px}
+}
+</style>
+</head>
+<body class="mode-auth">
+
+<!-- ============ SIDEBAR ADMIN ============ -->
+<aside class="sidebar">
+  <div class="sb-logo"><svg class="paw" viewBox="0 0 64 64" fill="currentColor"><ellipse cx="20" cy="16" rx="7" ry="9"/><ellipse cx="44" cy="16" rx="7" ry="9"/><ellipse cx="8" cy="30" rx="6" ry="8"/><ellipse cx="56" cy="30" rx="6" ry="8"/><path d="M32 26c-10 0-20 11-20 20 0 6 5 9 10 9 4 0 7-2 10-2s6 2 10 2c5 0 10-3 10-9 0-9-10-20-20-20z"/></svg><b>VetSalud</b></div>
+  <button class="sb-item" data-s="adminDashboard" onclick="go('adminDashboard')">📊 <span class="lbl">Dashboard</span></button>
+  <button class="sb-item" data-s="adminCitas" onclick="go('adminCitas')">📅 <span class="lbl">Citas</span></button>
+  <button class="sb-item" data-s="adminDia" onclick="go('adminDia')">🕒 <span class="lbl">Citas del Día</span></button>
+  <button class="sb-item" data-s="adminClientes" onclick="go('adminClientes')">👥 <span class="lbl">Clientes</span></button>
+  <button class="sb-item" data-s="adminMascotas" onclick="go('adminMascotas')">🐾 <span class="lbl">Mascotas</span></button>
+  <button class="sb-item" data-s="adminReportes" onclick="go('adminReportes')">📈 <span class="lbl">Reportes</span></button>
+  <div class="sb-spacer"></div>
+  <button class="sb-item" onclick="logout()">🚪 <span class="lbl">Cerrar Sesión</span></button>
+</aside>
+
+<main id="main">
+
+<!-- 1 SPLASH -->
+<section class="screen active" id="scr-splash">
+  <div class="splash">
+    <svg class="paw" viewBox="0 0 64 64" fill="currentColor"><ellipse cx="20" cy="16" rx="7" ry="9"/><ellipse cx="44" cy="16" rx="7" ry="9"/><ellipse cx="8" cy="30" rx="6" ry="8"/><ellipse cx="56" cy="30" rx="6" ry="8"/><path d="M32 26c-10 0-20 11-20 20 0 6 5 9 10 9 4 0 7-2 10-2s6 2 10 2c5 0 10-3 10-9 0-9-10-20-20-20z"/></svg>
+    <h1>VetSalud</h1>
+    <p>Cuidado que ellos merecen</p>
+    <div class="splash-hero"><img src="mascotas.png" alt="" onerror="this.outerHTML='<span class=emo>🐶🐱</span>'"></div>
+    <div style="width:100%;max-width:280px"><button class="btn" onclick="startApp()">Comenzar</button></div>
+  </div>
+</section>
+
+<!-- 2 LOGIN -->
+<section class="screen" id="scr-login">
+  <div class="wrap narrow">
+    <div class="auth-head">
+      <svg class="paw" viewBox="0 0 64 64" fill="currentColor"><ellipse cx="20" cy="16" rx="7" ry="9"/><ellipse cx="44" cy="16" rx="7" ry="9"/><ellipse cx="8" cy="30" rx="6" ry="8"/><ellipse cx="56" cy="30" rx="6" ry="8"/><path d="M32 26c-10 0-20 11-20 20 0 6 5 9 10 9 4 0 7-2 10-2s6 2 10 2c5 0 10-3 10-9 0-9-10-20-20-20z"/></svg>
+      <h1>VetSalud</h1><p>Bienvenido de vuelta</p>
+    </div>
+    <div class="field"><label>Correo electrónico</label><input id="lg-email" class="input" type="email" placeholder="usuario@email.com"></div>
+    <div class="field"><label>Contraseña</label><input id="lg-pass" class="input" type="password" placeholder="••••••••"></div>
+    <button class="btn" onclick="login()">Iniciar sesión</button>
+    <div class="link-row"><a onclick="go('register')">¿No tienes cuenta? Regístrate</a></div>
+    <div class="demo-box">Demo cliente: ana@email.com / 123456<br>Demo admin: admin@vetsalud.com / admin123<br><a onclick="resetDemo()" style="cursor:pointer;text-decoration:underline">Restablecer datos demo</a></div>
+  </div>
+</section>
+
+<!-- 3 REGISTRO -->
+<section class="screen" id="scr-register">
+  <div class="wrap narrow">
+    <div class="topbar"><button class="backbtn" onclick="go('login')">←</button><h1>Crear cuenta</h1></div>
+    <p class="center" style="color:var(--muted);font-size:.83rem;margin-bottom:16px">Completa tus datos para crear tu cuenta</p>
+    <div class="field"><label>Nombre completo</label><input id="rg-nombre" class="input" placeholder="Tu nombre"></div>
+    <div class="field"><label>Teléfono</label><input id="rg-tel" class="input" placeholder="55 0000 0000"></div>
+    <div class="field"><label>Correo electrónico</label><input id="rg-email" class="input" type="email" placeholder="usuario@email.com"></div>
+    <div class="field"><label>Contraseña</label><input id="rg-pass" class="input" type="password"></div>
+    <div class="field"><label>Confirmar contraseña</label><input id="rg-pass2" class="input" type="password"></div>
+    <div class="field"><label>Dirección (opcional)</label><input id="rg-dir" class="input"></div>
+    <button class="btn" onclick="registerClient()">Crear cuenta</button>
+    <div class="link-row">¿Ya tienes cuenta? <a onclick="go('login')">Inicia sesión</a></div>
+  </div>
+</section>
+
+<!-- 4 MENÚ PRINCIPAL -->
+<section class="screen" id="scr-home">
+  <div class="wrap">
+    <div class="home-head">
+      <div class="avatar" id="home-avatar">A</div>
+      <strong id="home-hello">¡Hola!</strong>
+      <button class="backbtn" title="Cerrar sesión" onclick="logout()">🚪</button>
+    </div>
+    <div class="banner"><span>El mejor cuidado<br>para tu mejor amigo</span><img src="mascotas.png" alt="" onerror="this.outerHTML='<span style=&quot;font-size:40px&quot;>🐶🐱</span>'"></div>
+    <h2 class="sec-title">¿Qué deseas hacer?</h2>
+    <div class="grid-menu">
+      <button class="menu-card" onclick="goAgendar()"><span class="ic">📅</span>Agendar Cita</button>
+      <button class="menu-card" onclick="go('miscitas')"><span class="ic">🗓️</span>Mis Citas</button>
+      <button class="menu-card" onclick="go('perfil')"><span class="ic">🐾</span>Mis Mascotas</button>
+      <button class="menu-card" onclick="go('historial')"><span class="ic">🕒</span>Historial</button>
+      <button class="menu-card" onclick="go('editarCliente')"><span class="ic">👤</span>Perfil</button>
+      <button class="menu-card" onclick="openContact()"><span class="ic">📞</span>Contacto</button>
+    </div>
+  </div>
+</section>
+
+<!-- 5 AGENDAR CITA -->
+<section class="screen" id="scr-agendar">
+  <div class="wrap">
+    <div class="topbar"><button class="backbtn" onclick="go('home')">←</button><h1>Agendar Cita</h1></div>
+    <div class="steps"><span class="step on">1</span><i></i><span class="step">2</span><i></i><span class="step">3</span><i></i><span class="step">4</span></div>
+    <div id="ag-nopets" style="display:none" class="card center">
+      <p style="margin-bottom:10px">Aún no tienes mascotas registradas. Registra una para agendar una cita.</p>
+      <button class="btn" onclick="go('registrarMascota')">Registrar Mascota</button>
+    </div>
+    <div id="ag-form">
+      <div class="field"><label>Mascota</label><select id="ag-pet" class="select"></select></div>
+      <div class="field"><label>Servicio</label><select id="ag-serv" class="select"></select></div>
+      <div class="row2">
+        <div class="field"><label>Fecha</label><input id="ag-fecha" class="input" type="date"></div>
+        <div class="field"><label>Hora</label><select id="ag-hora" class="select"></select></div>
+      </div>
+      <div class="field"><label>Veterinario (opcional)</label><select id="ag-vet" class="select"></select></div>
+      <div class="field"><label>Notas (opcional)</label><textarea id="ag-notas" class="textarea" placeholder="Escribe alguna nota…"></textarea></div>
+      <button class="btn" onclick="submitCita()">Continuar</button>
+    </div>
+  </div>
+</section>
+
+<!-- 6 CONFIRMAR CITA -->
+<section class="screen" id="scr-confirmar">
+  <div class="wrap narrow center">
+    <div class="big-check">✓</div>
+    <h2 id="conf-msg" style="margin-bottom:16px">¡Cita registrada correctamente!</h2>
+    <div class="card row" id="conf-card"></div>
+    <button class="btn" onclick="go('miscitas')">Ver mis citas</button>
+    <button class="btn btn-outline" onclick="go('home')">Volver al inicio</button>
+  </div>
+</section>
+
+<!-- 7 MIS CITAS -->
+<section class="screen" id="scr-miscitas">
+  <div class="wrap">
+    <div class="topbar"><button class="backbtn" onclick="go('home')">←</button><h1>Mis Citas</h1></div>
+    <div class="tabs" id="mc-tabs"></div>
+    <div id="mc-list"></div>
+  </div>
+</section>
+
+<!-- 8 DETALLE DE CITA -->
+<section class="screen" id="scr-detalle">
+  <div class="wrap">
+    <div class="topbar"><button class="backbtn" onclick="go('miscitas')">←</button><h1>Detalle de Cita</h1></div>
+    <div class="det-head"><div class="li-avatar" id="det-avatar">🐶</div><h2 id="det-name"></h2></div>
+    <div class="card">
+      <div class="det-row"><span>Fecha</span><strong id="det-fecha"></strong></div>
+      <div class="det-row"><span>Hora</span><strong id="det-hora"></strong></div>
+      <div class="det-row"><span>Servicio</span><strong id="det-serv"></strong></div>
+      <div class="det-row"><span>Veterinario</span><strong id="det-vet"></strong></div>
+      <div class="det-row"><span>Estado</span><strong id="det-estado"></strong></div>
+      <div class="det-row" style="border:none"><span>Notas</span><strong id="det-notas" style="text-align:right"></strong></div>
+    </div>
+    <div id="det-actions">
+      <button class="btn btn-outline" onclick="reprogramCita()">Reprogramar Cita</button>
+      <button class="btn btn-danger" onclick="cancelCita()">Cancelar Cita</button>
+    </div>
+  </div>
+</section>
+
+<!-- 10 PERFIL / MIS MASCOTAS -->
+<section class="screen" id="scr-perfil">
+  <div class="wrap">
+    <div class="pf-card">
+      <div class="avatar" id="pf-avatar">A</div>
+      <div><strong id="pf-name"></strong><small id="pf-email"></small></div>
+      <button class="pf-edit" onclick="go('editarCliente')">✎ Editar</button>
+    </div>
+    <div class="sec-row"><h2>Mis Mascotas</h2><button class="plus" onclick="go('registrarMascota')">+</button></div>
+    <div id="pf-pets"></div>
+  </div>
+</section>
+
+<!-- 11 REGISTRO DE MASCOTA -->
+<section class="screen" id="scr-registrarMascota">
+  <div class="wrap">
+    <div class="topbar"><button class="backbtn" onclick="go('perfil')">←</button><h1>Registrar Mascota</h1></div>
+    <div class="foto-pick">
+      <div class="li-avatar" id="rm-preview">🐾</div>
+      <small>Agregar foto</small>
+      <input type="file" accept="image/*" hidden id="rm-file" data-preview="rm-preview" onchange="pickFoto(this)">
+      <button class="btn mini" style="background:var(--teal);color:#fff" onclick="document.getElementById('rm-file').click()">📷 Elegir foto</button>
+    </div>
+    <div class="field"><label>Nombre</label><input id="rm-nombre" class="input"></div>
+    <div class="row2">
+      <div class="field"><label>Especie</label><select id="rm-especie" class="select"><option>Perro</option><option>Gato</option><option>Otro</option></select></div>
+      <div class="field"><label>Raza</label><input id="rm-raza" class="input"></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label>Edad</label><input id="rm-edad" class="input" placeholder="4 años"></div>
+      <div class="field"><label>Peso (kg)</label><input id="rm-peso" class="input"></div>
+    </div>
+    <div class="field"><label>Sexo</label><select id="rm-sexo" class="select"><option>Hembra</option><option>Macho</option></select></div>
+    <div class="field"><label>Vacunas</label><textarea id="rm-vacunas" class="textarea" placeholder="Escribe las vacunas…"></textarea></div>
+    <div class="field"><label>Historial médico básico</label><textarea id="rm-historial" class="textarea" placeholder="Información relevante…"></textarea></div>
+    <button class="btn" onclick="saveNewPet()">Guardar Mascota</button>
+  </div>
+</section>
+
+<!-- 12 EDITAR MASCOTA -->
+<section class="screen" id="scr-editarMascota">
+  <div class="wrap">
+    <div class="topbar"><button class="backbtn" onclick="go('perfil')">←</button><h1>Editar Mascota</h1></div>
+    <div class="foto-pick">
+      <div class="li-avatar" id="em-preview">🐾</div>
+      <input type="file" accept="image/*" hidden id="em-file" data-preview="em-preview" onchange="pickFoto(this)">
+      <button class="btn mini" style="background:var(--teal);color:#fff" onclick="document.getElementById('em-file').click()">📷 Cambiar foto</button>
+    </div>
+    <div class="field"><label>Nombre</label><input id="em-nombre" class="input"></div>
+    <div class="row2">
+      <div class="field"><label>Especie</label><select id="em-especie" class="select"><option>Perro</option><option>Gato</option><option>Otro</option></select></div>
+      <div class="field"><label>Raza</label><input id="em-raza" class="input"></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label>Edad</label><input id="em-edad" class="input"></div>
+      <div class="field"><label>Peso (kg)</label><input id="em-peso" class="input"></div>
+    </div>
+    <div class="field"><label>Sexo</label><select id="em-sexo" class="select"><option>Hembra</option><option>Macho</option></select></div>
+    <div class="field"><label>Vacunas</label><textarea id="em-vacunas" class="textarea"></textarea></div>
+    <div class="field"><label>Historial médico básico</label><textarea id="em-historial" class="textarea"></textarea></div>
+    <button class="btn" onclick="saveEditPet()">Guardar Cambios</button>
+    <button class="btn btn-danger" onclick="deletePet()">Eliminar Mascota</button>
+  </div>
+</section>
+
+<!-- 13 EDITAR CLIENTE -->
+<section class="screen" id="scr-editarCliente">
+  <div class="wrap">
+    <div class="topbar"><button class="backbtn" onclick="go('perfil')">←</button><h1>Editar Perfil</h1></div>
+    <div class="field"><label>Nombre completo</label><input id="ec-nombre" class="input"></div>
+    <div class="field"><label>Teléfono</label><input id="ec-tel" class="input"></div>
+    <div class="field"><label>Correo electrónico</label><input id="ec-email" class="input" type="email"></div>
+    <div class="field"><label>Dirección (opcional)</label><textarea id="ec-dir" class="textarea"></textarea></div>
+    <button class="btn" onclick="saveClient()">Guardar Cambios</button>
+    <button class="btn btn-outline" onclick="logout()">Cerrar sesión</button>
+  </div>
+</section>
+
+<!-- 14 HISTORIAL -->
+<section class="screen" id="scr-historial">
+  <div class="wrap">
+    <div class="topbar"><button class="backbtn" onclick="go('home')">←</button><h1>Historial de Citas</h1></div>
+    <div class="field"><select id="hi-pet" class="select" onchange="setHiPet(this.value)"></select></div>
+    <div id="hi-list"></div>
+  </div>
+</section>
+
+<!-- 15 PANEL ADMINISTRATIVO -->
+<section class="screen" id="scr-adminDashboard">
+  <div class="wrap">
+    <h1 class="adm-title">Dashboard · Resumen General</h1>
+    <div class="stats">
+      <div class="stat"><div class="ic">📅</div><div class="num" id="ad-dia" style="color:var(--blue-tx)">0</div><small>Citas del día</small></div>
+      <div class="stat"><div class="ic">⏳</div><div class="num" id="ad-pend" style="color:var(--orange-tx)">0</div><small>Citas pendientes</small></div>
+      <div class="stat"><div class="ic">👥</div><div class="num" id="ad-cli" style="color:var(--teal)">0</div><small>Clientes registrados</small></div>
+      <div class="stat"><div class="ic">🐾</div><div class="num" id="ad-mas" style="color:var(--green-tx)">0</div><small>Mascotas registradas</small></div>
+    </div>
+    <div class="card">
+      <h2 style="font-size:.95rem;font-weight:900;margin-bottom:10px">Citas del día</h2>
+      <div id="ad-list"></div>
+    </div>
+    <button class="btn" onclick="go('adminCitas')">Ver todas las citas</button>
+  </div>
+</section>
+
+<!-- 16 LISTA DE CITAS ADMIN -->
+<section class="screen" id="scr-adminCitas">
+  <div class="wrap">
+    <h1 class="adm-title">Todas las Citas</h1>
+    <div class="filters">
+      <input id="ac-search" class="input" placeholder="Buscar cliente o mascota…" oninput="acSearch(this.value)">
+      <select id="ac-filter" class="select" onchange="acFilter(this.value)">
+        <option value="todos">Filtrar: todos</option><option value="pendiente">Pendientes</option>
+        <option value="confirmada">Confirmadas</option><option value="finalizada">Finalizadas</option>
+        <option value="cancelada">Canceladas</option>
+      </select>
+    </div>
+    <div class="table-wrap"><table class="table">
+      <thead><tr><th>Cliente</th><th>Mascota</th><th>Fecha</th><th>Hora</th><th>Estado</th><th>Acciones</th></tr></thead>
+      <tbody id="ac-body"></tbody>
+    </table></div>
+    <div class="pages" id="ac-pages"></div>
+  </div>
+</section>
+
+<!-- 17 CITAS DEL DÍA -->
+<section class="screen" id="scr-adminDia">
+  <div class="wrap">
+    <div class="topbar"><button class="backbtn" onclick="go('adminDashboard')">←</button><h1 id="dia-fecha"></h1></div>
+    <div id="dia-list"></div>
+    <button class="btn" onclick="finalizeToday()">Marcar como finalizada</button>
+  </div>
+</section>
+
+<!-- ADMIN CLIENTES -->
+<section class="screen" id="scr-adminClientes">
+  <div class="wrap">
+    <h1 class="adm-title">Clientes</h1>
+    <div class="table-wrap"><table class="table">
+      <thead><tr><th>Nombre</th><th>Correo</th><th>Teléfono</th><th>Mascotas</th></tr></thead>
+      <tbody id="acl-body"></tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- ADMIN MASCOTAS -->
+<section class="screen" id="scr-adminMascotas">
+  <div class="wrap">
+    <h1 class="adm-title">Mascotas</h1>
+    <div class="table-wrap"><table class="table">
+      <thead><tr><th>Mascota</th><th>Especie</th><th>Raza</th><th>Dueño</th></tr></thead>
+      <tbody id="am-body"></tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- ADMIN REPORTES -->
+<section class="screen" id="scr-adminReportes">
+  <div class="wrap">
+    <h1 class="adm-title">Reportes</h1>
+    <div class="stats" id="rep-body"></div>
+  </div>
+</section>
+
+</main>
+
+<!-- NAV INFERIOR CLIENTE -->
+<nav class="bottom-nav">
+  <button class="bn-item" data-nav="inicio" onclick="go('home')"><span class="ic">🏠</span>Inicio</button>
+  <button class="bn-item" data-nav="citas" onclick="go('miscitas')"><span class="ic">📅</span>Citas</button>
+  <button class="bn-center" onclick="goAgendar()">🐾</button>
+  <button class="bn-item" data-nav="mascotas" onclick="go('perfil')"><span class="ic">🐶</span>Mascotas</button>
+  <button class="bn-item" data-nav="perfil" onclick="go('editarCliente')"><span class="ic">👤</span>Perfil</button>
+</nav>
+
+<!-- MODAL CONTACTO -->
+<div class="modal" id="contactModal">
+  <div class="modal-card">
+    <h3>📞 Contacto</h3>
+    <p><b>Teléfono:</b> 55 1234 5678</p>
+    <p><b>Correo:</b> contacto@vetsalud.mx</p>
+    <p><b>Dirección:</b> Av. de los Animales 123, Col. Centro, CDMX</p>
+    <p><b>Horario:</b> Lun–Sáb · 9:00 a.m. a 7:00 p.m.</p>
+    <button class="btn" onclick="closeModal()">Cerrar</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ================= DATOS Y UTILIDADES ================= */
+const SERVICIOS=['Consulta General','Vacuna','Baño y Corte','Desparasitación','Urgencia'];
+const VETS=['Dra. Mariana López','Dr. Carlos Ruiz','Dra. Sofía Herrera'];
+const SLOTS=[]; for(let h=9;h<=18;h++){SLOTS.push(String(h).padStart(2,'0')+':00'); if(h<18)SLOTS.push(String(h).padStart(2,'0')+':30');}
+const CAP={proximas:'Próximas',confirmadas:'Confirmadas',pendientes:'Pendientes',historial:'Historial',pendiente:'Pendiente',confirmada:'Confirmada',cancelada:'Cancelada',finalizada:'Finalizada'};
+const cap=k=>CAP[k]||k;
+const $=s=>document.querySelector(s);
+const $$=s=>[...document.querySelectorAll(s)];
+const uid=()=>Math.random().toString(36).slice(2,9);
+function todayISO(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function off(days){const d=new Date();d.setDate(d.getDate()+days);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+const fmtFecha=iso=>{const[a,m,d]=iso.split('-');return d+'/'+m+'/'+a;};
+const fmtFechaLong=iso=>new Date(iso+'T12:00:00').toLocaleDateString('es-MX',{day:'numeric',month:'long',year:'numeric'});
+const fmtHora=h=>{const[H,M]=h.split(':').map(Number);return (H%12||12)+':'+String(M).padStart(2,'0')+' '+(H<12?'a.m.':'p.m.');};
+
+let db={users:[],pets:[],citas:[]}, session=null, current='splash';
+const ui={tab:'proximas',reprogramId:null,detId:null,editPetId:null,tmpFoto:'',adminPage:1,adminFilter:'todos',adminSearch:'',hiPet:'all'};
+
+function saveDB(){localStorage.setItem('vs_db',JSON.stringify(db));}
+function loadDB(){const raw=localStorage.getItem('vs_db'); if(raw){db=JSON.parse(raw);} else {seed(); saveDB();} session=localStorage.getItem('vs_session')||null;}
+function setSession(id){session=id; id?localStorage.setItem('vs_session',id):localStorage.removeItem('vs_session');}
+const currentUser=()=>db.users.find(u=>u.id===session);
+
+function seed(){
+  const t=todayISO();
+  db.users=[
+    {id:'admin',nombre:'Administrador VetSalud',email:'admin@vetsalud.com',password:'admin123',rol:'admin'},
+    {id:'u1',nombre:'Ana Martínez',email:'ana@email.com',password:'123456',telefono:'561 234 5678',direccion:'Calle Falsa 123, Col. Centro, Ciudad de México',rol:'cliente'},
+    {id:'u2',nombre:'Carlos López',email:'carlos@email.com',password:'123456',telefono:'55 1111 2222',direccion:'Av. Reforma 45, CDMX',rol:'cliente'},
+    {id:'u3',nombre:'María Gómez',email:'maria@email.com',password:'123456',telefono:'55 3333 4444',direccion:'Calle Roble 8, CDMX',rol:'cliente'},
+    {id:'u4',nombre:'Juan Pérez',email:'juan@email.com',password:'123456',telefono:'55 5555 6666',direccion:'Calle Sauce 21, CDMX',rol:'cliente'},
+    {id:'u5',nombre:'Laura Torres',email:'laura@email.com',password:'123456',telefono:'55 7777 8888',direccion:'Av. Universidad 300, CDMX',rol:'cliente'}
+  ];
+  db.pets=[
+    {id:'p1',owner:'u1',nombre:'Luna',especie:'Perro',raza:'Golden Retriever',edad:'4 años',peso:'22',sexo:'Hembra',vacunas:'Rabia, Moquillo, Parvovirus',historial:'Alergia leve a ciertos alimentos.',foto:''},
+    {id:'p2',owner:'u1',nombre:'Max',especie:'Gato',raza:'Europeo',edad:'3 años',peso:'4',sexo:'Macho',vacunas:'Rabia, Triple felina',historial:'',foto:''},
+    {id:'p3',owner:'u2',nombre:'Max',especie:'Perro',raza:'Beagle',edad:'2 años',peso:'12',sexo:'Macho',vacunas:'Rabia',historial:'',foto:''},
+    {id:'p4',owner:'u3',nombre:'Milo',especie:'Perro',raza:'Bulldog Francés',edad:'5 años',peso:'11',sexo:'Macho',vacunas:'Rabia, Parvovirus',historial:'',foto:''},
+    {id:'p5',owner:'u4',nombre:'Rocky',especie:'Perro',raza:'Mestizo',edad:'6 años',peso:'18',sexo:'Macho',vacunas:'Rabia',historial:'',foto:''},
+    {id:'p6',owner:'u5',nombre:'Kira',especie:'Gato',raza:'Siamesa',edad:'2 años',peso:'3',sexo:'Hembra',vacunas:'Triple felina',historial:'',foto:''}
+  ];
+  db.citas=[
+    {id:'c1',petId:'p1',servicio:'Consulta General',fecha:t,hora:'09:00',veterinario:'Dra. Mariana López',notas:'',estado:'confirmada',diagnostico:'',tratamiento:''},
+    {id:'c2',petId:'p3',servicio:'Vacuna',fecha:t,hora:'10:00',veterinario:'Dr. Carlos Ruiz',notas:'',estado:'pendiente',diagnostico:'',tratamiento:''},
+    {id:'c3',petId:'p4',servicio:'Consulta General',fecha:t,hora:'11:30',veterinario:'Dra. Mariana López',notas:'',estado:'confirmada',diagnostico:'',tratamiento:''},
+    {id:'c4',petId:'p5',servicio:'Consulta General',fecha:t,hora:'13:00',veterinario:'Dra. Sofía Herrera',notas:'',estado:'pendiente',diagnostico:'',tratamiento:''},
+    {id:'c5',petId:'p6',servicio:'Baño y Corte',fecha:t,hora:'17:30',veterinario:'',notas:'',estado:'cancelada',diagnostico:'',tratamiento:''},
+    {id:'c6',petId:'p1',servicio:'Consulta General',fecha:off(3),hora:'10:00',veterinario:'Dra. Mariana López',notas:'Revisión general y chequeo rutinario.',estado:'confirmada',diagnostico:'',tratamiento:''},
+    {id:'c7',petId:'p2',servicio:'Vacuna',fecha:off(6),hora:'11:30',veterinario:'Dr. Carlos Ruiz',notas:'',estado:'pendiente',diagnostico:'',tratamiento:''},
+    {id:'c8',petId:'p4',servicio:'Consulta General',fecha:off(12),hora:'09:00',veterinario:'',notas:'',estado:'confirmada',diagnostico:'',tratamiento:''},
+    {id:'c9',petId:'p1',servicio:'Vacuna',fecha:off(-15),hora:'10:30',veterinario:'Dra. Mariana López',notas:'',estado:'cancelada',diagnostico:'',tratamiento:''},
+    {id:'c10',petId:'p2',servicio:'Vacuna',fecha:off(-65),hora:'10:00',veterinario:'Dr. Carlos Ruiz',notas:'',estado:'finalizada',diagnostico:'Vacunación anual',tratamiento:'Vacuna múltiple'},
+    {id:'c11',petId:'p1',servicio:'Consulta General',fecha:off(-95),hora:'12:00',veterinario:'Dra. Mariana López',notas:'',estado:'finalizada',diagnostico:'Salud óptima',tratamiento:'Ninguno'},
+    {id:'c12',petId:'p1',servicio:'Consulta General',fecha:off(-140),hora:'09:30',veterinario:'Dra. Sofía Herrera',notas:'',estado:'finalizada',diagnostico:'Revisión rutinaria',tratamiento:'Desparasitación'}
+  ];
+}
+
+/* ================= NAVEGACIÓN ================= */
+function go(id){
+  current=id;
+  if(id==='home')renderHome();
+  if(id==='agendar')setupAgendar();
+  if(id==='miscitas')renderMisCitas();
+  if(id==='perfil')renderPerfil();
+  if(id==='historial')renderHistorial();
+  if(id==='editarCliente')fillClientForm();
+  if(id==='registrarMascota')resetPetForm();
+  if(id==='editarMascota')fillPetForm();
+  if(id==='adminDashboard')renderAdminDash();
+  if(id==='adminCitas')renderAdminCitas();
+  if(id==='adminDia')renderAdminDia();
+  if(id==='adminClientes')renderAdminClientes();
+  if(id==='adminMascotas')renderAdminMascotas();
+  if(id==='adminReportes')renderAdminReportes();
+  $$('.screen').forEach(s=>s.classList.toggle('active',s.id==='scr-'+id));
+  const u=currentUser();
+  document.body.classList.toggle('mode-admin',!!(u&&u.rol==='admin'));
+  document.body.classList.toggle('mode-auth',['splash','login','register'].includes(id));
+  const navMap={home:'inicio',miscitas:'citas',detalle:'citas',confirmar:'citas',historial:'citas',agendar:'agendar',perfil:'mascotas',registrarMascota:'mascotas',editarMascota:'mascotas',editarCliente:'perfil'};
+  $$('.bn-item').forEach(b=>b.classList.toggle('active',b.dataset.nav===navMap[id]));
+  $$('.sb-item').forEach(b=>b.classList.toggle('active',b.dataset.s===id));
+  window.scrollTo(0,0);
+}
+function startApp(){ if(!session){go('login');return;} currentUser().rol==='admin'?go('adminDashboard'):go('home'); }
+function goAgendar(){ ui.reprogramId=null; go('agendar'); }
+function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400);}
+function openContact(){$('#contactModal').classList.add('show');}
+function closeModal(){$('#contactModal').classList.remove('show');}
+function resetDemo(){localStorage.removeItem('vs_db');localStorage.removeItem('vs_session');location.reload();}
+
+/* ================= AUTH ================= */
+function login(){
+  const e=$('#lg-email').value.trim().toLowerCase(), p=$('#lg-pass').value;
+  const u=db.users.find(x=>x.email.toLowerCase()===e&&x.password===p);
+  if(!u){toast('Correo o contraseña incorrectos');return;}
+  setSession(u.id); toast('¡Bienvenido, '+u.nombre.split(' ')[0]+'!');
+  u.rol==='admin'?go('adminDashboard'):go('home');
+}
+function logout(){setSession(null);go('login');}
+function registerClient(){
+  const nombre=$('#rg-nombre').value.trim(),tel=$('#rg-tel').value.trim(),email=$('#rg-email').value.trim(),
+        pass=$('#rg-pass').value,pass2=$('#rg-pass2').value,dir=$('#rg-dir').value.trim();
+  if(!nombre||!email||!pass){toast('Completa nombre, correo y contraseña');return;}
+  if(!/^\S+@\S+\.\S+$/.test(email)){toast('Correo no válido');return;}
+  if(pass.length<6){toast('La contraseña debe tener al menos 6 caracteres');return;}
+  if(pass!==pass2){toast('Las contraseñas no coinciden');return;}
+  if(db.users.some(u=>u.email.toLowerCase()===email.toLowerCase())){toast('Este correo ya está registrado');return;}
+  const u={id:uid(),nombre,telefono:tel,email,password:pass,direccion:dir,rol:'cliente'};
+  db.users.push(u);saveDB();setSession(u.id);toast('Cuenta creada con éxito');go('home');
+}
+
+/* ================= CLIENTE ================= */
+function renderHome(){const u=currentUser();$('#home-hello').textContent='¡Hola, '+u.nombre.split(' ')[0]+'!';$('#home-avatar').textContent=u.nombre[0].toUpperCase();}
+function avatar(p){p=p||{};const em=p.especie==='Gato'?'🐱':'';return '<div class="li-avatar">'+(p.foto?'<img src="'+p.foto+'" alt="">':em)+'</div>';}
+
+function setupAgendar(){
+  const u=currentUser(),pets=db.pets.filter(p=>p.owner===u.id);
+  if(!pets.length){$('#ag-form').style.display='none';$('#ag-nopets').style.display='block';return;}
+  $('#ag-form').style.display='block';$('#ag-nopets').style.display='none';
+  $('#ag-pet').innerHTML=pets.map(p=>'<option value="'+p.id+'">'+p.nombre+'</option>').join('');
+  $('#ag-serv').innerHTML=SERVICIOS.map(s=>'<option>'+s+'</option>').join('');
+  $('#ag-vet').innerHTML='<option value="">Seleccionar…</option>'+VETS.map(v=>'<option>'+v+'</option>').join('');
+  $('#ag-hora').innerHTML='<option value="">HH:MM</option>'+SLOTS.map(s=>'<option value="'+s+'">'+fmtHora(s)+'</option>').join('');
+  $('#ag-fecha').min=todayISO();
+  if(ui.reprogramId){const c=db.citas.find(x=>x.id===ui.reprogramId);
+    if(c){$('#ag-pet').value=c.petId;$('#ag-serv').value=c.servicio;$('#ag-fecha').value=c.fecha;$('#ag-hora').value=c.hora;$('#ag-vet').value=c.veterinario||'';$('#ag-notas').value=c.notas||'';}
+  }else{['ag-fecha','ag-notas'].forEach(i=>$('#'+i).value='');$('#ag-hora').value='';$('#ag-vet').value='';}
+}
+function submitCita(){
+  const petId=$('#ag-pet').value,serv=$('#ag-serv').value,fecha=$('#ag-fecha').value,hora=$('#ag-hora').value,
+        vet=$('#ag-vet').value,notas=$('#ag-notas').value.trim();
+  if(!petId||!fecha||!hora){toast('Completa mascota, fecha y hora');return;}
+  let cid;
+  if(ui.reprogramId){const c=db.citas.find(x=>x.id===ui.reprogramId);
+    Object.assign(c,{petId,servicio:serv,fecha,hora,veterinario:vet,notas});cid=c.id;ui.reprogramId=null;
+    $('#conf-msg').textContent='¡Cita reprogramada correctamente!';
+  }else{const c={id:uid(),petId,servicio:serv,fecha,hora,veterinario:vet,notas,estado:'pendiente',diagnostico:'',tratamiento:''};
+    db.citas.push(c);cid=c.id;$('#conf-msg').textContent='¡Cita registrada correctamente!';}
+  saveDB();
+  const c=db.citas.find(x=>x.id===cid),p=db.pets.find(x=>x.id===c.petId);
+  $('#conf-card').innerHTML=avatar(p)+'<div class="li-main"><div class="li-title">'+p.nombre+'</div>'+
+    '<div class="li-sub">📅 '+fmtFecha(c.fecha)+' · 🕒 '+fmtHora(c.hora)+'</div>'+
+    '<div class="li-sub">Servicio: '+c.servicio+'</div><div class="li-sub">Veterinario: '+(c.veterinario||'Por asignar')+'</div></div>';
+  go('confirmar');
+}
+
+function renderMisCitas(){
+  const u=currentUser(),t=todayISO();
+  const mine=db.citas.filter(c=>{const p=db.pets.find(x=>x.id===c.petId);return p&&p.owner===u.id;});
+  let list;
+  if(ui.tab==='proximas')list=mine.filter(c=>c.fecha>=t&&(c.estado==='confirmada'||c.estado==='pendiente'));
+  else if(ui.tab==='confirmadas')list=mine.filter(c=>c.estado==='confirmada');
+  else if(ui.tab==='pendientes')list=mine.filter(c=>c.estado==='pendiente');
+  else list=mine.filter(c=>c.estado==='finalizada'||c.estado==='cancelada'||c.fecha<t);
+  list.sort((a,b)=>(a.fecha+a.hora).localeCompare(b.fecha+b.hora));
+  $('#mc-tabs').innerHTML=['proximas','confirmadas','pendientes','historial'].map(x=>'<button class="tab '+(ui.tab===x?'active':'')+'" onclick="setTab(\''+x+'\')">'+cap(x)+'</button>').join('');
+  $('#mc-list').innerHTML=list.map(c=>{const p=db.pets.find(x=>x.id===c.petId)||{nombre:'—',especie:''};
+    return '<div class="list-item" onclick="openDetalle(\''+c.id+'\')">'+avatar(p)+
+      '<div class="li-main"><div class="li-title">'+p.nombre+'</div><div class="li-sub">'+c.servicio+'</div>'+
+      '<div class="li-meta"><span>📅 '+fmtFecha(c.fecha)+'</span><span>🕒 '+fmtHora(c.hora)+'</span></div></div>'+
+      '<span class="chip '+c.estado+'">'+cap(c.estado)+'</span></div>';}).join('')||'<p class="empty">No hay citas en esta categoría.</p>';
+}
+function setTab(t){ui.tab=t;renderMisCitas();}
+
+function openDetalle(id){
+  const c=db.citas.find(x=>x.id===id);if(!c)return;ui.detId=id;
+  const p=db.pets.find(x=>x.id===c.petId)||{nombre:'—',especie:'Perro'};
+  $('#det-avatar').innerHTML=avatar(p).replace('class="li-avatar"','class="li-avatar" style="width:76px;height:76px;font-size:38px"');
+  $('#det-name').textContent=p.nombre;
+  $('#det-fecha').textContent=fmtFechaLong(c.fecha);
+  $('#det-hora').textContent=fmtHora(c.hora);
+  $('#det-serv').textContent=c.servicio;
+  $('#det-vet').textContent=c.veterinario||'Por asignar';
+  $('#det-estado').innerHTML='<span class="chip '+c.estado+'">'+cap(c.estado)+'</span>';
+  $('#det-notas').textContent=c.notas||'—';
+  $('#det-actions').style.display=(c.estado==='pendiente'||c.estado==='confirmada')?'block':'none';
+  go('detalle');
+}
+function reprogramCita(){ui.reprogramId=ui.detId;go('agendar');}
+function cancelCita(){
+  const c=db.citas.find(x=>x.id===ui.detId);if(!c)return;
+  if(!confirm('¿Seguro que deseas cancelar esta cita?'))return;
+  c.estado='cancelada';saveDB();toast('Cita cancelada');go('miscitas');
+}
+
+function renderPerfil(){
+  const u=currentUser();
+  $('#pf-avatar').textContent=u.nombre[0].toUpperCase();
+  $('#pf-name').textContent=u.nombre;$('#pf-email').textContent=u.email;
+  const pets=db.pets.filter(p=>p.owner===u.id);
+  $('#pf-pets').innerHTML=pets.map(p=>'<div class="list-item" onclick="openEditarMascota(\''+p.id+'\')">'+avatar(p)+
+    '<div class="li-main"><div class="li-title">'+p.nombre+'</div><div class="li-sub">'+p.especie+' · '+p.raza+' · '+p.edad+'</div></div><span class="chev">›</span></div>').join('')||'<p class="empty">Aún no tienes mascotas registradas.</p>';
+}
+function openEditarMascota(id){ui.editPetId=id;go('editarMascota');}
+function pickFoto(input){
+  const f=input.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{ui.tmpFoto=r.result;$('#'+input.dataset.preview).innerHTML='<img src="'+r.result+'">';};
+  r.readAsDataURL(f);
+}
+function resetPetForm(){
+  ui.tmpFoto='';
+  ['rm-nombre','rm-raza','rm-edad','rm-peso','rm-vacunas','rm-historial'].forEach(i=>$('#'+i).value='');
+  $('#rm-especie').value='Perro';$('#rm-sexo').value='Hembra';$('#rm-preview').innerHTML='🐾';
+}
+function saveNewPet(){
+  const u=currentUser(),nombre=$('#rm-nombre').value.trim();
+  if(!nombre){toast('Escribe el nombre de tu mascota');return;}
+  db.pets.push({id:uid(),owner:u.id,nombre,especie:$('#rm-especie').value,raza:$('#rm-raza').value.trim(),
+    edad:$('#rm-edad').value.trim(),peso:$('#rm-peso').value.trim(),sexo:$('#rm-sexo').value,
+    vacunas:$('#rm-vacunas').value.trim(),historial:$('#rm-historial').value.trim(),foto:ui.tmpFoto||''});
+  saveDB();toast('Mascota registrada');go('perfil');
+}
+function fillPetForm(){
+  const p=db.pets.find(x=>x.id===ui.editPetId);if(!p){go('perfil');return;}
+  ui.tmpFoto=p.foto||'';
+  $('#em-nombre').value=p.nombre;$('#em-especie').value=p.especie;$('#em-raza').value=p.raza||'';
+  $('#em-edad').value=p.edad||'';$('#em-peso').value=p.peso||'';$('#em-sexo').value=p.sexo||'Hembra';
+  $('#em-vacunas').value=p.vacunas||'';$('#em-historial').value=p.historial||'';
+  $('#em-preview').innerHTML=p.foto?'<img src="'+p.foto+'">':'🐾';
+}
+function saveEditPet(){
+  const p=db.pets.find(x=>x.id===ui.editPetId);if(!p)return;
+  p.nombre=$('#em-nombre').value.trim()||p.nombre;p.especie=$('#em-especie').value;
+  p.raza=$('#em-raza').value.trim();p.edad=$('#em-edad').value.trim();p.peso=$('#em-peso').value.trim();
+  p.sexo=$('#em-sexo').value;p.vacunas=$('#em-vacunas').value.trim();p.historial=$('#em-historial').value.trim();
+  if(ui.tmpFoto)p.foto=ui.tmpFoto;
+  saveDB();toast('Mascota actualizada');go('perfil');
+}
+function deletePet(){
+  if(!confirm('¿Eliminar esta mascota y sus citas?'))return;
+  db.citas=db.citas.filter(c=>c.petId!==ui.editPetId);
+  db.pets=db.pets.filter(p=>p.id!==ui.editPetId);
+  saveDB();toast('Mascota eliminada');go('perfil');
+}
+function fillClientForm(){
+  const u=currentUser();
+  $('#ec-nombre').value=u.nombre;$('#ec-tel').value=u.telefono||'';$('#ec-email').value=u.email;$('#ec-dir').value=u.direccion||'';
+}
+function saveClient(){
+  const u=currentUser();
+  u.nombre=$('#ec-nombre').value.trim()||u.nombre;u.telefono=$('#ec-tel').value.trim();
+  u.email=$('#ec-email').value.trim()||u.email;u.direccion=$('#ec-dir').value.trim();
+  saveDB();toast('Perfil actualizado');go('perfil');
+}
+function renderHistorial(){
+  const u=currentUser(),pets=db.pets.filter(p=>p.owner===u.id);
+  $('#hi-pet').innerHTML='<option value="all">Todas las mascotas</option>'+pets.map(p=>'<option value="'+p.id+'">'+p.nombre+'</option>').join('');
+  $('#hi-pet').value=ui.hiPet;
+  let list=db.citas.filter(c=>{const p=db.pets.find(x=>x.id===c.petId);
+    return p&&p.owner===u.id&&(ui.hiPet==='all'||c.petId===ui.hiPet)&&(c.estado==='finalizada'||c.fecha<todayISO());});
+  list.sort((a,b)=>(b.fecha+b.hora).localeCompare(a.fecha+a.hora));
+  $('#hi-list').innerHTML=list.map(c=>{const p=db.pets.find(x=>x.id===c.petId)||{nombre:'—'};
+    return '<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><strong style="font-size:.9rem">'+fmtFecha(c.fecha)+'</strong><span class="chip '+c.estado+'">'+cap(c.estado)+'</span></div>'+
+    '<div class="li-sub">'+p.nombre+' · '+c.servicio+'</div>'+
+    (c.diagnostico?'<div class="li-sub"><b>Diagnóstico:</b> '+c.diagnostico+'</div>':'')+
+    (c.tratamiento?'<div class="li-sub"><b>Tratamiento:</b> '+c.tratamiento+'</div>':'')+'</div>';}).join('')||'<p class="empty">Sin historial aún.</p>';
+}
+function setHiPet(v){ui.hiPet=v;renderHistorial();}
+
+/* ================= ADMIN ================= */
+function renderAdminDash(){
+  const t=todayISO();
+  const dia=db.citas.filter(c=>c.fecha===t&&c.estado!=='cancelada').sort((a,b)=>a.hora.localeCompare(b.hora));
+  $('#ad-dia').textContent=dia.length;
+  $('#ad-pend').textContent=db.citas.filter(c=>c.estado==='pendiente').length;
+  $('#ad-cli').textContent=db.users.filter(u=>u.rol==='cliente').length;
+  $('#ad-mas').textContent=db.pets.length;
+  $('#ad-list').innerHTML=dia.map(c=>{const p=db.pets.find(x=>x.id===c.petId)||{nombre:'—'};
+    return '<div class="list-item" style="cursor:default"><div class="li-main"><div class="li-title">'+fmtHora(c.hora)+' · '+p.nombre+'</div><div class="li-sub">'+c.servicio+'</div></div><span class="chip '+c.estado+'">'+cap(c.estado)+'</span></div>';}).join('')||'<p class="empty">Sin citas hoy.</p>';
+}
+function actionBtns(c){
+  let b='<div class="acts">';
+  if(c.estado==='pendiente')b+='<button class="icon-btn ok" title="Confirmar" onclick="adminSetEstado(\''+c.id+'\',\'confirmada\')">✓</button>';
+  if(c.estado==='confirmada')b+='<button class="icon-btn ok" title="Finalizar" onclick="adminSetEstado(\''+c.id+'\',\'finalizada\')">✔</button>';
+  if(c.estado!=='cancelada'&&c.estado!=='finalizada')b+='<button class="icon-btn bad" title="Cancelar" onclick="adminSetEstado(\''+c.id+'\',\'cancelada\')">✕</button>';
+  b+='<button class="icon-btn bad" title="Eliminar" onclick="adminDelCita(\''+c.id+'\')">🗑</button></div>';
+  return b;
+}
+function renderAdminCitas(){
+  const q=ui.adminSearch.toLowerCase();
+  let list=db.citas.filter(c=>{
+    const p=db.pets.find(x=>x.id===c.petId),o=p&&db.users.find(u=>u.id===p.owner);
+    const txt=((p?p.nombre:'')+' '+(o?o.nombre:'')).toLowerCase();
+    return (!q||txt.includes(q))&&(ui.adminFilter==='todos'||c.estado===ui.adminFilter);});
+  list.sort((a,b)=>(b.fecha+b.hora).localeCompare(a.fecha+a.hora));
+  const per=5,pages=Math.max(1,Math.ceil(list.length/per));
+  if(ui.adminPage>pages)ui.adminPage=pages;
+  const slice=list.slice((ui.adminPage-1)*per,ui.adminPage*per);
+  $('#ac-body').innerHTML=slice.map(c=>{
+    const p=db.pets.find(x=>x.id===c.petId)||{nombre:'—',owner:null};
+    const o=db.users.find(u=>u.id===p.owner)||{nombre:'—'};
+    return '<tr><td>'+o.nombre+'</td><td>'+p.nombre+'</td><td>'+fmtFecha(c.fecha)+'</td><td>'+fmtHora(c.hora)+'</td><td><span class="chip '+c.estado+'">'+cap(c.estado)+'</span></td><td>'+actionBtns(c)+'</td></tr>';
+  }).join('')||'<tr><td colspan="6" style="text-align:center;padding:20px">Sin resultados.</td></tr>';
+  let pg='';for(let i=1;i<=pages;i++)pg+='<button class="page-btn '+(i===ui.adminPage?'active':'')+'" onclick="changePage('+i+')">'+i+'</button>';
+  $('#ac-pages').innerHTML=pg;
+}
+function acSearch(v){ui.adminSearch=v;ui.adminPage=1;renderAdminCitas();}
+function acFilter(v){ui.adminFilter=v;ui.adminPage=1;renderAdminCitas();}
+function changePage(i){ui.adminPage=i;renderAdminCitas();}
+function adminSetEstado(id,est){
+  const c=db.citas.find(x=>x.id===id);if(!c)return;
+  c.estado=est;saveDB();toast('Cita marcada: '+cap(est));
+  if(current==='adminCitas')renderAdminCitas();
+  if(current==='adminDia')renderAdminDia();
+  if(current==='adminDashboard')renderAdminDash();
+}
+function adminDelCita(id){
+  if(!confirm('¿Eliminar esta cita?'))return;
+  db.citas=db.citas.filter(c=>c.id!==id);saveDB();toast('Cita eliminada');renderAdminCitas();
+}
+function renderAdminDia(){
+  const t=todayISO();
+  $('#dia-fecha').textContent=fmtFechaLong(t);
+  const list=db.citas.filter(c=>c.fecha===t&&c.estado!=='cancelada').sort((a,b)=>a.hora.localeCompare(b.hora));
+  $('#dia-list').innerHTML=list.map(c=>{
+    const p=db.pets.find(x=>x.id===c.petId)||{nombre:'—',owner:null};
+    const o=db.users.find(u=>u.id===p.owner)||{nombre:''};
+    let act='';
+    if(c.estado==='pendiente')act='<button class="icon-btn ok" title="Confirmar" onclick="adminSetEstado(\''+c.id+'\',\'confirmada\')">✓</button>';
+    else if(c.estado==='confirmada')act='<button class="btn mini" onclick="adminSetEstado(\''+c.id+'\',\'finalizada\')">Finalizar</button>';
+    return '<div class="list-item"><div class="li-main"><div class="li-title">'+fmtHora(c.hora)+'</div><div class="li-sub">'+p.nombre+' · '+o.nombre+'</div><div class="li-sub">'+c.servicio+'</div></div><span class="chip '+c.estado+'">'+cap(c.estado)+'</span>'+act+'</div>';
+  }).join('')||'<p class="empty">No hay citas para hoy.</p>';
+}
+function finalizeToday(){
+  const t=todayISO();let n=0;
+  db.citas.forEach(c=>{if(c.fecha===t&&c.estado==='confirmada'){c.estado='finalizada';n++;}});
+  saveDB();toast(n?n+' cita(s) finalizada(s)':'No hay citas confirmadas hoy');renderAdminDia();
+}
+function renderAdminClientes(){
+  $('#acl-body').innerHTML=db.users.filter(u=>u.rol==='cliente').map(u=>{
+    const n=db.pets.filter(p=>p.owner===u.id).length;
+    return '<tr><td>'+u.nombre+'</td><td>'+u.email+'</td><td>'+(u.telefono||'—')+'</td><td>'+n+'</td></tr>';}).join('');
+}
+function renderAdminMascotas(){
+  $('#am-body').innerHTML=db.pets.map(p=>{
+    const o=db.users.find(u=>u.id===p.owner)||{nombre:'—'};
+    return '<tr><td>'+p.nombre+'</td><td>'+p.especie+'</td><td>'+(p.raza||'—')+'</td><td>'+o.nombre+'</td></tr>';}).join('');
+}
+function renderAdminReportes(){
+  const by=e=>db.citas.filter(c=>c.estado===e).length;
+  $('#rep-body').innerHTML=
+    '<div class="stat"><div class="num">'+db.citas.length+'</div><small>Total citas</small></div>'+
+    '<div class="stat"><div class="num" style="color:var(--blue-tx)">'+by('confirmada')+'</div><small>Confirmadas</small></div>'+
+    '<div class="stat"><div class="num" style="color:var(--orange-tx)">'+by('pendiente')+'</div><small>Pendientes</small></div>'+
+    '<div class="stat"><div class="num" style="color:var(--green-tx)">'+by('finalizada')+'</div><small>Finalizadas</small></div>'+
+    '<div class="stat"><div class="num" style="color:var(--red-tx)">'+by('cancelada')+'</div><small>Canceladas</small></div>';
+}
+
+/* ================= INICIO ================= */
+loadDB();
+</script>
+</body>
+</html>
