@@ -1,0 +1,49 @@
+{
+  "descripcion": "Estructura de datos de VetSalud - Referencia JSON",
+  "version": "2.0",
+  "entidades": {
+    "users": {
+      "descripcion": "Usuarios del sistema (clientes y admin)",
+      "campos": {
+        "id": "string (UID único)",
+        "nombre": "string (máx 60)",
+        "email": "string (email válido, único, máx 80)",
+        "password": "string (hash)",
+        "telefono": "string (opcional, máx 20)",
+        "direccion": "string (opcional, máx 150)",
+        "rol": "enum: 'cliente' | 'admin'"
+      }
+    },
+    "pets": {
+      "descripcion": "Mascotas registradas por los clientes",
+      "campos": {
+        "id": "string (UID único)",
+        "owner": "string (referencia a users.id)",
+        "nombre": "string (máx 40)",
+        "especie": "enum: 'Perro' | 'Gato' | 'Otro'",
+        "raza": "string (máx 40)",
+        "edad": "string (máx 20)",
+        "peso": "string/number (0.1 - 200 kg)",
+        "sexo": "enum: 'Hembra' | 'Macho'",
+        "vacunas": "string (máx 300)",
+        "historial": "string (máx 500)",
+        "foto": "string (base64 data URL)"
+      }
+    },
+    "citas": {
+      "descripcion": "Citas agendadas",
+      "campos": {
+        "id": "string (UID único)",
+        "petId": "string (referencia a pets.id)",
+        "servicio": "enum: Consulta General | Vacuna | Baño y Corte | Desparasitación | Urgencia",
+        "fecha": "string (ISO date YYYY-MM-DD)",
+        "hora": "string (HH:MM)",
+        "veterinario": "string (opcional)",
+        "notas": "string (máx 500)",
+        "estado": "enum: pendiente | confirmada | finalizada | cancelada",
+        "diagnostico": "string",
+        "tratamiento": "string"
+      }
+    }
+  }
+}
