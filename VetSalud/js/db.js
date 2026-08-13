@@ -59,6 +59,27 @@ const fmtHora = (h) => {
   return (H % 12 || 12) + ':' + String(M).padStart(2, '0') + ' ' + (H < 12 ? 'a.m.' : 'p.m.');
 };
 
+// Preguntas sugeridas para seguridad
+const PREGUNTAS_SEGURIDAD = [
+  '¿Cómo se llama tu primera mascota?',
+  '¿En qué ciudad naciste?',
+  '¿Cuál es el nombre de tu mejor amigo de la infancia?',
+  '¿Cuál era tu comida favorita de niño?',
+  '¿Cómo se llamaba tu primera escuela?'
+];
+
+// Estado del flujo de recuperación
+const rec = { userId: null, intentos: 0 };
+
+/**
+ * Normaliza respuestas: minúsculas, sin tildes ni espacios extra.
+ * Así "Firulais", "firulais" y "Firuláis" cuentan igual.
+ */
+function normalizeAnswer(str) {
+  return (str || '').trim().toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
 // ============================================
 // SEGURIDAD - Sanitización y validaciones
 // ============================================
@@ -159,8 +180,8 @@ const ui = {
   hiPet: 'all'
 };
 
-const STORAGE_KEY = 'vs_db_v2';
-const SESSION_KEY = 'vs_session_v2';
+const STORAGE_KEY = 'vs_db_v3';
+const SESSION_KEY = 'vs_session_v3';
 
 function saveDB() {
   try {
@@ -185,6 +206,8 @@ function loadDB() {
     saveDB();
   }
   session = localStorage.getItem(SESSION_KEY) || null;
+    // ✨ Si la sesión apunta a un usuario que ya no existe, limpiarla
+  if (session && !currentUser()) setSession(null);
 }
 
 function setSession(id) {
@@ -233,5 +256,42 @@ function seed() {
     { id: 'c10', petId: 'p2', servicio: 'Vacuna', fecha: off(-65), hora: '10:00', veterinario: 'Dr. Carlos Ruiz', notas: '', estado: 'finalizada', diagnostico: 'Vacunación anual', tratamiento: 'Vacuna múltiple' },
     { id: 'c11', petId: 'p1', servicio: 'Consulta General', fecha: off(-95), hora: '12:00', veterinario: 'Dra. Mariana López', notas: '', estado: 'finalizada', diagnostico: 'Salud óptima', tratamiento: 'Ninguno' },
     { id: 'c12', petId: 'p1', servicio: 'Consulta General', fecha: off(-140), hora: '09:30', veterinario: 'Dra. Sofía Herrera', notas: '', estado: 'finalizada', diagnostico: 'Revisión rutinaria', tratamiento: 'Desparasitación' }
+  ];
+
+  db.users = [
+    { id: 'admin', nombre: 'Administrador VetSalud', email: 'admin@vetsalud.com',
+      password: simpleHash('Admin123'), rol: 'admin',
+      pregunta: '¿Cómo se llama tu primera mascota?',
+     respuesta: simpleHash(normalizeAnswer('Firulais')) },
+
+    { id: 'u1', nombre: 'Ana Martínez', email: 'ana@email.com',
+      password: simpleHash('Ana12345'), telefono: '561 234 5678',
+     direccion: 'Calle Falsa 123, Col. Centro, CDMX', rol: 'cliente',
+     pregunta: '¿En qué ciudad naciste?',
+     respuesta: simpleHash(normalizeAnswer('Guadalajara')) },
+
+    { id: 'u2', nombre: 'Carlos López', email: 'carlos@email.com',
+      password: simpleHash('Carlos12'), telefono: '55 1111 2222',
+      direccion: 'Av. Reforma 45, CDMX', rol: 'cliente',
+      pregunta: '¿Cuál es el nombre de tu mejor amigo de la infancia?',
+      respuesta: simpleHash(normalizeAnswer('Pedro')) },
+
+    { id: 'u3', nombre: 'María Gómez', email: 'maria@email.com',
+      password: simpleHash('Maria123'), telefono: '55 3333 4444',
+      direccion: 'Calle Roble 8, CDMX', rol: 'cliente',
+      pregunta: '¿Cuál era tu comida favorita de niño?',
+      respuesta: simpleHash(normalizeAnswer('Sopa de fideo')) },
+
+    { id: 'u4', nombre: 'Juan Pérez', email: 'juan@email.com',
+      password: simpleHash('Juan1234'), telefono: '55 5555 6666',
+      direccion: 'Calle Sauce 21, CDMX', rol: 'cliente',
+      pregunta: '¿Cómo se llamaba tu primera escuela?',
+      respuesta: simpleHash(normalizeAnswer('Benito Juárez')) },
+
+    { id: 'u5', nombre: 'Laura Torres', email: 'laura@email.com',
+      password: simpleHash('Laura123'), telefono: '55 7777 8888',
+      direccion: 'Av. Universidad 300, CDMX', rol: 'cliente',
+      pregunta: '¿Cómo se llama tu primera mascota?',
+      respuesta: simpleHash(normalizeAnswer('Misifú')) }
   ];
 }

@@ -379,6 +379,10 @@ function fillClientForm() {
   $('#ec-pass-actual').value = '';
   $('#ec-pass-nueva').value = '';
   $('#ec-pass-confirm').value = '';
+
+  // 🛡️ Mostrar pregunta actual y limpiar campos de seguridad
+  $('#ec-pregunta-hint').textContent = 'Pregunta actual: ' + (u.pregunta || 'sin configurar');
+  ['ec-pass-seg', 'ec-pregunta', 'ec-respuesta'].forEach(i => $('#' + i).value = '');
 }
 
 function saveClient() {

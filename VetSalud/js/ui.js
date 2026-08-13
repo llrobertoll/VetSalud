@@ -22,12 +22,13 @@ function go(id) {
   if (id === 'adminReportes') renderAdminReportes();
   if (id === 'adminReportes') renderAdminReportes();
   if (id === 'adminPerfil') fillAdminForm(); 
+  if (id === 'recuperar') resetRecuperar();   // ✨ NUEVO
 
   $$('.screen').forEach(s => s.classList.toggle('active', s.id === 'scr-' + id));
 
   const u = currentUser();
   document.body.classList.toggle('mode-admin', !!(u && u.rol === 'admin'));
-  document.body.classList.toggle('mode-auth', ['splash', 'login', 'register'].includes(id));
+  document.body.classList.toggle('mode-auth', ['splash', 'login', 'register', 'recuperar'].includes(id));
 
   const navMap = {
     home: 'inicio',

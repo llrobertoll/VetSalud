@@ -212,6 +212,10 @@ function fillAdminForm() {
   $('#adm-pass-actual').value = '';
   $('#adm-pass-nueva').value = '';
   $('#adm-pass-confirm').value = '';
+
+  // 🛡️ Mostrar pregunta actual y limpiar campos de seguridad
+  $('#adm-pregunta-hint').textContent = 'Pregunta actual: ' + (u.pregunta || 'sin configurar');
+  ['adm-pass-seg', 'adm-pregunta', 'adm-respuesta'].forEach(i => $('#' + i).value = '');
 }
 
 function saveAdminProfile() {

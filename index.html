@@ -41,18 +41,15 @@
       <img src="imagenes/mascotas.png" alt="mascotas" width="20" height="20">
       <span class="lbl">Mascotas</span>
     </button>
-<button class="sb-item" data-s="adminReportes" onclick="go('adminReportes')">
-  <img src="imagenes/informe.png" alt="reportes" width="20" height="20">
-  <span class="lbl">Reportes</span>
-</button>
-
-<!-- ✨ NUEVO: Botón Mi Perfil Admin -->
-<button class="sb-item" data-s="adminPerfil" onclick="go('adminPerfil')">
-  <img src="imagenes/perfil.png" alt="mi perfil" width="20" height="20">
-  <span class="lbl">Mi Perfil</span>
-</button>
-
-<div class="sb-spacer"></div>
+    <button class="sb-item" data-s="adminReportes" onclick="go('adminReportes')">
+      <img src="imagenes/informe.png" alt="reportes" width="20" height="20">
+      <span class="lbl">Reportes</span>
+    </button>
+    <button class="sb-item" data-s="adminPerfil" onclick="go('adminPerfil')">
+      <img src="imagenes/perfil.png" alt="mi perfil" width="20" height="20">
+      <span class="lbl">Mi Perfil</span>
+    </button>
+    <div class="sb-spacer"></div>
     <button class="sb-item" onclick="logout()">
       <img src="imagenes/salir.png" alt="cerrar sesion" width="16" height="16">
       <span class="lbl">Cerrar Sesión</span>
@@ -98,21 +95,25 @@
         </div>
         <div class="field">
           <label>Correo electrónico</label>
-          <input id="lg-email" class="input" type="email" placeholder="usuario@email.com" maxlength="50" autocomplete="email">
+          <input id="lg-email" class="input" type="email" placeholder="usuario@email.com" maxlength="80" autocomplete="email">
         </div>
         <div class="field">
           <label>Contraseña</label>
-          <input id="lg-pass" class="input" type="password" placeholder="••••••••" maxlength="15" autocomplete="current-password">
+          <input id="lg-pass" class="input" type="password" placeholder="••••••••" maxlength="17" autocomplete="current-password">
         </div>
         <button class="btn" onclick="login()">Iniciar sesión</button>
         <div class="link-row">
+          <a onclick="go('recuperar')">¿Olvidaste tu contraseña? Recupérala aquí</a>
+        </div>
+        <div class="link-row">
           <a onclick="go('register')">¿No tienes cuenta? Regístrate</a>
         </div>
-        <div class="demo-box">
-          Demo cliente: ana@gmail.com / 123456<br>
+        <!--<div class="demo-box">
+          Demo cliente: ana@email.com / Ana12345<br>
           Demo admin: admin@vetsalud.com / Admin123<br>
+          Recuperación (respuesta): admin → <b>Firulais</b> · ana → <b>Guadalajara</b><br>
           <a onclick="resetDemo()" style="cursor:pointer;text-decoration:underline">Restablecer datos demo</a>
-        </div>
+        </div> -->
       </div>
     </section>
 
@@ -128,7 +129,7 @@
         </p>
         <div class="field">
           <label>Nombre completo</label>
-          <input id="rg-nombre" class="input" placeholder="Tu nombre" maxlength="25">
+          <input id="rg-nombre" class="input" placeholder="Tu nombre" maxlength="45">
         </div>
         <div class="field">
           <label>Teléfono</label>
@@ -136,20 +137,30 @@
         </div>
         <div class="field">
           <label>Correo electrónico</label>
-          <input id="rg-email" class="input" type="email" placeholder="usuario@email.com" maxlength="20">
+          <input id="rg-email" class="input" type="email" placeholder="usuario@email.com" maxlength="80">
         </div>
         <div class="field">
           <label>Contraseña</label>
-          <input id="rg-pass" class="input" type="password" maxlength="15">
+          <input id="rg-pass" class="input" type="password" maxlength="17">
           <small class="hint">Mínimo 8 caracteres, una mayúscula y un número</small>
         </div>
         <div class="field">
           <label>Confirmar contraseña</label>
-          <input id="rg-pass2" class="input" type="password" maxlength="15">
+          <input id="rg-pass2" class="input" type="password" maxlength="17">
         </div>
         <div class="field">
           <label>Dirección (opcional)</label>
-          <input id="rg-dir" class="input" maxlength="60">
+          <input id="rg-dir" class="input" maxlength="120">
+        </div>
+        <div class="field">
+          <label>Pregunta de seguridad *</label>
+          <input id="rg-pregunta" class="input" list="lista-preguntas" maxlength="100"
+                 placeholder="Escribe o elige una pregunta">
+        </div>
+        <div class="field">
+          <label>Respuesta de seguridad *</label>
+          <input id="rg-respuesta" class="input" maxlength="60"
+                 placeholder="La usarás para recuperar tu contraseña">
         </div>
         <button class="btn" onclick="registerClient()">Crear cuenta</button>
         <div class="link-row">
@@ -232,7 +243,15 @@
             <div class="field">
               <label>Fecha</label>
               <input id="ag-fecha" class="input" type="date">
-elect"></select>
+            </div>
+            <div class="field">
+              <label>Hora</label>
+              <select id="ag-hora" class="select"></select>
+            </div>
+          </div>
+          <div class="field">
+            <label>Veterinario (opcional)</label>
+            <select id="ag-vet" class="select"></select>
           </div>
           <div class="field">
             <label>Notas (opcional)</label>
@@ -326,7 +345,7 @@ elect"></select>
         </div>
         <div class="field">
           <label>Nombre</label>
-          <input id="rm-nombre" class="input" maxlength="15">
+          <input id="rm-nombre" class="input" maxlength="40">
         </div>
         <div class="row2">
           <div class="field">
@@ -339,7 +358,7 @@ elect"></select>
           </div>
           <div class="field">
             <label>Raza</label>
-            <input id="rm-raza" class="input" maxlength="15">
+            <input id="rm-raza" class="input" maxlength="40">
           </div>
         </div>
         <div class="row2">
@@ -361,11 +380,11 @@ elect"></select>
         </div>
         <div class="field">
           <label>Vacunas</label>
-          <textarea id="rm-vacunas" class="textarea" placeholder="Escribe las vacunas…" maxlength="50"></textarea>
+          <textarea id="rm-vacunas" class="textarea" placeholder="Escribe las vacunas…" maxlength="200"></textarea>
         </div>
         <div class="field">
           <label>Historial médico básico</label>
-          <textarea id="rm-historial" class="textarea" placeholder="Información relevante…" maxlength="80"></textarea>
+          <textarea id="rm-historial" class="textarea" placeholder="Información relevante…" maxlength="500"></textarea>
         </div>
         <button class="btn" onclick="saveNewPet()">Guardar Mascota</button>
       </div>
@@ -385,7 +404,7 @@ elect"></select>
         </div>
         <div class="field">
           <label>Nombre</label>
-          <input id="em-nombre" class="input" maxlength="15">
+          <input id="em-nombre" class="input" maxlength="40">
         </div>
         <div class="row2">
           <div class="field">
@@ -404,7 +423,7 @@ elect"></select>
         <div class="row2">
           <div class="field">
             <label>Edad</label>
-            <input id="em-edad" class="input" maxlength="20">
+            <input id="em-edad" class="input" maxlength="2">
           </div>
           <div class="field">
             <label>Peso (kg)</label>
@@ -420,76 +439,102 @@ elect"></select>
         </div>
         <div class="field">
           <label>Vacunas</label>
-          <textarea id="em-vacunas" class="textarea" maxlength="80"></textarea>
+          <textarea id="em-vacunas" class="textarea" maxlength="200"></textarea>
         </div>
         <div class="field">
           <label>Historial médico básico</label>
-          <textarea id="em-historial" class="textarea" maxlength="80"></textarea>
+          <textarea id="em-historial" class="textarea" maxlength="500"></textarea>
         </div>
         <button class="btn" onclick="saveEditPet()">Guardar Cambios</button>
         <button class="btn btn-danger" onclick="deletePet()">Eliminar Mascota</button>
       </div>
     </section>
 
-<!-- 13 EDITAR CLIENTE (continuación) -->
-<section class="screen" id="scr-editarCliente">
-  <div class="wrap">
-    <div class="topbar">
-      <button class="backbtn" onclick="go('perfil')">←</button>
-      <h1>Editar Perfil</h1>
-    </div>
-    
-    <!-- DATOS PERSONALES -->
-    <div class="field">
-      <label>Nombre completo</label>
-      <input id="ec-nombre" class="input" maxlength="30">
-    </div>
-    <div class="field">
-      <label>Teléfono</label>
-      <input id="ec-tel" class="input" maxlength="10">
-    </div>
-    <div class="field">
-      <label>Correo electrónico</label>
-      <input id="ec-email" class="input" type="email" maxlength="25">
-    </div>
-    <div class="field">
-      <label>Dirección (opcional)</label>
-      <textarea id="ec-dir" class="textarea" maxlength="50"></textarea>
-    </div>
-    <button class="btn" onclick="saveClient()">Guardar Cambios</button>
+    <!-- 13 EDITAR CLIENTE -->
+    <section class="screen" id="scr-editarCliente">
+      <div class="wrap">
+        <div class="topbar">
+          <button class="backbtn" onclick="go('perfil')">←</button>
+          <h1>Editar Perfil</h1>
+        </div>
 
-    <!-- 🔐 NUEVA SECCIÓN: CAMBIO DE CONTRASEÑA -->
-    <div class="card" style="margin-top:20px;">
-      <h3 style="font-size:.95rem;font-weight:900;margin-bottom:14px;color:var(--teal)">
-        Cambiar Contraseña
-      </h3>
-      <div class="field">
-        <label>Contraseña actual</label>
-        <input id="ec-pass-actual" class="input" type="password" 
-               placeholder="Tu contraseña actual" 
-               maxlength="15" autocomplete="current-password">
-      </div>
-      <div class="field">
-        <label>Nueva contraseña</label>
-        <input id="ec-pass-nueva" class="input" type="password" 
-               placeholder="Mín. 8 caracteres, mayúscula y número" 
-               maxlength="100" autocomplete="new-password">
-        <small class="hint">Debe contener mínimo 8 caracteres, una mayúscula y un número</small>
-      </div>
-      <div class="field">
-        <label>Confirmar nueva contraseña</label>
-        <input id="ec-pass-confirm" class="input" type="password" 
-               placeholder="Repite la nueva contraseña" 
-               maxlength="15" autocomplete="new-password">
-      </div>
-      <button class="btn" onclick="changePassword()">Actualizar Contraseña</button>
-    </div>
+        <!-- DATOS PERSONALES -->
+        <div class="field">
+          <label>Nombre completo</label>
+          <input id="ec-nombre" class="input" maxlength="45">
+        </div>
+        <div class="field">
+          <label>Teléfono</label>
+          <input id="ec-tel" class="input" maxlength="10">
+        </div>
+        <div class="field">
+          <label>Correo electrónico</label>
+          <input id="ec-email" class="input" type="email" maxlength="80">
+        </div>
+        <div class="field">
+          <label>Dirección (opcional)</label>
+          <textarea id="ec-dir" class="textarea" maxlength="120"></textarea>
+        </div>
+        <button class="btn" onclick="saveClient()">Guardar Cambios</button>
 
-    <button class="btn btn-outline" style="margin-top:16px" onclick="logout()">
-      Cerrar sesión
-    </button>
-  </div>
-</section>
+        <!-- 🛡️ EDITAR PREGUNTA DE SEGURIDAD -->
+        <div class="card" style="margin-top:14px;">
+          <h3 style="font-size:.95rem;font-weight:900;margin-bottom:6px;color:var(--teal)">🛡️ Pregunta de seguridad</h3>
+          <small class="hint" id="ec-pregunta-hint"></small>
+          <p style="font-size:.75rem;color:var(--muted);margin:8px 0 12px">
+            Para cambiarla necesitas tu contraseña actual.
+          </p>
+          <div class="field">
+            <label>Contraseña actual</label>
+            <input id="ec-pass-seg" class="input" type="password" maxlength="17">
+          </div>
+          <div class="field">
+            <label>Nueva pregunta</label>
+            <input id="ec-pregunta" class="input" list="lista-preguntas" maxlength="100"
+                   placeholder="Escribe o elige una pregunta">
+          </div>
+          <div class="field">
+            <label>Nueva respuesta</label>
+            <input id="ec-respuesta" class="input" maxlength="60">
+          </div>
+          <button class="btn" onclick="saveSecurityQuestion('ec-pass-seg','ec-pregunta','ec-respuesta')">
+            Actualizar pregunta
+          </button>
+        </div>
+
+        <!-- 🔐 CAMBIO DE CONTRASEÑA -->
+        <div class="card" style="margin-top:20px;">
+          <h3 style="font-size:.95rem;font-weight:900;margin-bottom:14px;color:var(--teal)">
+            🔐 Cambiar Contraseña
+          </h3>
+          <div class="field">
+            <label>Contraseña actual</label>
+            <input id="ec-pass-actual" class="input" type="password" 
+                   placeholder="Tu contraseña actual" 
+                   maxlength="17" autocomplete="current-password">
+          </div>
+          <div class="field">
+            <label>Nueva contraseña</label>
+            <input id="ec-pass-nueva" class="input" type="password" 
+                   placeholder="Mín. 8 caracteres, mayúscula y número" 
+                   maxlength="17" autocomplete="new-password">
+            <small class="hint">Debe contener mínimo 8 caracteres, una mayúscula y un número</small>
+          </div>
+          <div class="field">
+            <label>Confirmar nueva contraseña</label>
+            <input id="ec-pass-confirm" class="input" type="password" 
+                   placeholder="Repite la nueva contraseña" 
+                   maxlength="17" autocomplete="new-password">
+          </div>
+          <button class="btn" onclick="changePassword()">Actualizar Contraseña</button>
+        </div>
+
+        <button class="btn btn-outline" style="margin-top:16px" onclick="logout()">
+          Cerrar sesión
+        </button>
+      </div>
+    </section>
+
     <!-- 14 HISTORIAL -->
     <section class="screen" id="scr-historial">
       <div class="wrap">
@@ -614,67 +659,153 @@ elect"></select>
       </div>
     </section>
 
-<!-- ✨ PANTALLA DE PERFIL ADMIN -->
-<section class="screen" id="scr-adminPerfil">
-  <div class="wrap">
-    <div class="topbar">
-      <button class="backbtn" onclick="go('adminDashboard')">←</button>
-      <h1>Mi Perfil (Admin)</h1>
-    </div>
-
-    <!-- INFO DEL ADMIN -->
-    <div class="pf-card" style="margin-bottom:20px;">
-      <div class="avatar" id="adm-avatar" style="background:#ffffff33">A</div>
-      <div>
-        <strong id="adm-name"></strong>
-        <small id="adm-email"></small>
-        <div style="margin-top:4px;">
-          <span class="chip confirmada">Administrador</span>
+    <!-- ✨ PANTALLA DE PERFIL ADMIN -->
+    <section class="screen" id="scr-adminPerfil">
+      <div class="wrap">
+        <div class="topbar">
+          <button class="backbtn" onclick="go('adminDashboard')">←</button>
+          <h1>Mi Perfil (Admin)</h1>
         </div>
-      </div>
-    </div>
 
-    <!-- DATOS BÁSICOS -->
-    <div class="card">
-      <h3 style="font-size:.95rem;font-weight:900;margin-bottom:14px;color:var(--teal)">
-        👤 Datos de la cuenta
-      </h3>
-      <div class="field">
-        <label>Nombre</label>
-        <input id="adm-nombre" class="input" maxlength="25">
-      </div>
-      <div class="field">
-        <label>Correo</label>
-        <input id="adm-email-input" class="input" type="email" maxlength="25">
-      </div>
-      <button class="btn" onclick="saveAdminProfile()">Guardar Cambios</button>
-    </div>
+        <!-- INFO DEL ADMIN -->
+        <div class="pf-card" style="margin-bottom:20px;">
+          <div class="avatar" id="adm-avatar" style="background:#ffffff33">A</div>
+          <div>
+            <strong id="adm-name"></strong>
+            <small id="adm-email"></small>
+            <div style="margin-top:4px;">
+              <span class="chip confirmada">Administrador</span>
+            </div>
+          </div>
+        </div>
 
-    <!-- 🔐 CAMBIO DE CONTRASEÑA -->
-    <div class="card" style="margin-top:14px;">
-      <h3 style="font-size:.95rem;font-weight:900;margin-bottom:14px;color:var(--teal)">
-        🔐 Cambiar Contraseña
-      </h3>
-      <div class="field">
-        <label>Contraseña actual</label>
-        <input id="adm-pass-actual" class="input" type="password"
-               placeholder="Tu contraseña actual" maxlength="15">
+        <!-- 👤 DATOS BÁSICOS -->
+        <div class="card">
+          <h3 style="font-size:.95rem;font-weight:900;margin-bottom:14px;color:var(--teal)">
+            👤 Datos de la cuenta
+          </h3>
+          <div class="field">
+            <label>Nombre</label>
+            <input id="adm-nombre" class="input" maxlength="45">
+          </div>
+          <div class="field">
+            <label>Correo</label>
+            <input id="adm-email-input" class="input" type="email" maxlength="80">
+          </div>
+          <button class="btn" onclick="saveAdminProfile()">Guardar Cambios</button>
+        </div>
+
+        <!-- 🔐 CAMBIO DE CONTRASEÑA -->
+        <div class="card" style="margin-top:14px;">
+          <h3 style="font-size:.95rem;font-weight:900;margin-bottom:14px;color:var(--teal)">
+            🔐 Cambiar Contraseña
+          </h3>
+          <div class="field">
+            <label>Contraseña actual</label>
+            <input id="adm-pass-actual" class="input" type="password"
+                   placeholder="Tu contraseña actual" maxlength="17">
+          </div>
+          <div class="field">
+            <label>Nueva contraseña</label>
+            <input id="adm-pass-nueva" class="input" type="password"
+                   placeholder="Mín. 8 caracteres, mayúscula y número" maxlength="17">
+            <small class="hint">Debe contener mínimo 8 caracteres, una mayúscula y un número</small>
+          </div>
+          <div class="field">
+            <label>Confirmar nueva contraseña</label>
+            <input id="adm-pass-confirm" class="input" type="password"
+                   placeholder="Repite la nueva contraseña" maxlength="17">
+          </div>
+          <button class="btn" onclick="changeAdminPassword()">Actualizar Contraseña</button>
+        </div>
+
+        <!-- 🛡️ PREGUNTA DE SEGURIDAD -->
+        <div class="card" style="margin-top:14px;">
+          <h3 style="font-size:.95rem;font-weight:900;margin-bottom:6px;color:var(--teal)">🛡️ Pregunta de seguridad</h3>
+          <small class="hint" id="adm-pregunta-hint"></small>
+          <p style="font-size:.75rem;color:var(--muted);margin:8px 0 12px">
+            Para cambiarla necesitas tu contraseña actual.
+          </p>
+          <div class="field">
+            <label>Contraseña actual</label>
+            <input id="adm-pass-seg" class="input" type="password" maxlength="17">
+          </div>
+          <div class="field">
+            <label>Nueva pregunta</label>
+            <input id="adm-pregunta" class="input" list="lista-preguntas" maxlength="100">
+          </div>
+          <div class="field">
+            <label>Nueva respuesta</label>
+            <input id="adm-respuesta" class="input" maxlength="60">
+          </div>
+          <button class="btn" onclick="saveSecurityQuestion('adm-pass-seg','adm-pregunta','adm-respuesta')">
+            Actualizar pregunta
+          </button>
+        </div>
+
       </div>
-      <div class="field">
-        <label>Nueva contraseña</label>
-        <input id="adm-pass-nueva" class="input" type="password"
-               placeholder="Mín. 8 caracteres, mayúscula y número" maxlength="15">
-        <small class="hint">Debe contener mínimo 8 caracteres, una mayúscula y un número</small>
+    </section>
+
+    <!-- ✨ RECUPERAR CONTRASEÑA -->
+    <section class="screen" id="scr-recuperar">
+      <div class="wrap narrow">
+        <div class="topbar">
+          <button class="backbtn" onclick="go('login')">←</button>
+          <h1>Recuperar contraseña</h1>
+        </div>
+
+        <div class="steps">
+          <span class="step on" id="rec-dot1">1</span><i></i>
+          <span class="step" id="rec-dot2">2</span><i></i>
+          <span class="step" id="rec-dot3">3</span>
+        </div>
+
+        <!-- PASO 1: correo o usuario -->
+        <div id="rec-step1">
+          <p class="center" style="color:var(--muted);font-size:.83rem;margin-bottom:16px">
+            Escribe tu correo o nombre de usuario
+          </p>
+          <div class="field">
+            <label>Correo o usuario</label>
+            <input id="rec-email" class="input" maxlength="80" placeholder="usuario@email.com">
+          </div>
+          <button class="btn" onclick="recStep1()">Continuar</button>
+        </div>
+
+        <!-- PASO 2: pregunta de seguridad -->
+        <div id="rec-step2" style="display:none">
+          <div class="card center" style="margin-bottom:14px;">
+            <p style="font-size:.75rem;color:var(--muted);font-weight:800;margin-bottom:6px">🔐 PREGUNTA DE SEGURIDAD</p>
+            <strong id="rec-pregunta-text" style="font-size:.95rem"></strong>
+          </div>
+          <div class="field">
+            <label>Tu respuesta</label>
+            <input id="rec-respuesta" class="input" maxlength="60" placeholder="Escribe tu respuesta">
+          </div>
+          <button class="btn" onclick="recStep2()">Verificar respuesta</button>
+        </div>
+
+        <!-- PASO 3: nueva contraseña -->
+        <div id="rec-step3" style="display:none">
+          <div class="card center" style="margin-bottom:14px;">
+            <strong style="color:var(--green-tx)">✅ Identidad verificada</strong>
+            <p style="font-size:.78rem;color:var(--muted);margin-top:4px">Ahora escribe tu nueva contraseña</p>
+          </div>
+          <div class="field">
+            <label>Nueva contraseña</label>
+            <input id="rec-pass1" class="input" type="password" maxlength="17">
+            <small class="hint">Mínimo 8 caracteres, una mayúscula y un número</small>
+          </div>
+          <div class="field">
+            <label>Confirmar nueva contraseña</label>
+            <input id="rec-pass2" class="input" type="password" maxlength="17">
+          </div>
+          <button class="btn" onclick="recStep3()">Restablecer contraseña</button>
+        </div>
+
+        <div class="link-row"><a onclick="go('login')">Volver a iniciar sesión</a></div>
       </div>
-      <div class="field">
-        <label>Confirmar nueva contraseña</label>
-        <input id="adm-pass-confirm" class="input" type="password"
-               placeholder="Repite la nueva contraseña" maxlength="15">
-      </div>
-      <button class="btn" onclick="changeAdminPassword()">Actualizar Contraseña</button>
-    </div>
-  </div>
-</section>
+    </section>
 
   </main>
 
@@ -714,6 +845,15 @@ elect"></select>
   </div>
 
   <div id="toast"></div>
+
+  <!-- Preguntas sugeridas (aparecen al escribir en los campos de pregunta) -->
+  <datalist id="lista-preguntas">
+    <option value="¿Cómo se llama tu primera mascota?"></option>
+    <option value="¿En qué ciudad naciste?"></option>
+    <option value="¿Cuál es el nombre de tu mejor amigo de la infancia?"></option>
+    <option value="¿Cuál era tu comida favorita de niño?"></option>
+    <option value="¿Cómo se llamaba tu primera escuela?"></option>
+  </datalist>
 
   <!-- Scripts organizados -->
   <script src="VetSalud/js/db.js"></script>
