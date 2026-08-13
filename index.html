@@ -838,26 +838,26 @@
 
   <div id="toast"></div>
 
-<!-- 🤖 CHATBOT VetBot -->
-<button id="chat-fab" onclick="toggleChat()" title="Asistente virtual">💬</button>
+  <!-- 🤖 CHATBOT VetBot -->
+  <button id="chat-fab" onclick="toggleChat()" title="Asistente virtual">💬</button>
 
-<div id="chat-window" class="chat-window">
-  <div class="chat-head">
-    <div class="chat-head-info">
-      <b>🐾 VetBot</b>
-      <small>Asistente de cuidado de mascotas</small>
+  <div id="chat-window" class="chat-window">
+    <div class="chat-head">
+      <div class="chat-head-info">
+        <b>🐾 VetBot</b>
+        <small>Asistente de cuidado de mascotas</small>
+      </div>
+      <button class="chat-close" onclick="toggleChat()">✕</button>
     </div>
-    <button class="chat-close" onclick="toggleChat()">✕</button>
+    <div id="chat-body" class="chat-body"></div>
+    <div id="chat-sugs" class="chat-sugs"></div>
+    <div class="chat-input">
+      <input id="chat-text" class="input" maxlength="200"
+             placeholder="Escribe tu pregunta…"
+             onkeydown="if(event.key==='Enter')sendChat()">
+      <button class="chat-send" onclick="sendChat()">➤</button>
+    </div>
   </div>
-  <div id="chat-body" class="chat-body"></div>
-  <div id="chat-sugs" class="chat-sugs"></div>
-  <div class="chat-input">
-    <input id="chat-text" class="input" maxlength="200"
-           placeholder="Escribe tu pregunta…"
-           onkeydown="if(event.key==='Enter')sendChat()">
-    <button class="chat-send" onclick="sendChat()">➤</button>
-  </div>
-</div>
 
   <!-- Preguntas sugeridas (aparecen al escribir en los campos de pregunta) -->
   <datalist id="lista-preguntas">
