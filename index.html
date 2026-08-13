@@ -838,6 +838,27 @@
 
   <div id="toast"></div>
 
+<!-- 🤖 CHATBOT VetBot -->
+<button id="chat-fab" onclick="toggleChat()" title="Asistente virtual">💬</button>
+
+<div id="chat-window" class="chat-window">
+  <div class="chat-head">
+    <div class="chat-head-info">
+      <b>🐾 VetBot</b>
+      <small>Asistente de cuidado de mascotas</small>
+    </div>
+    <button class="chat-close" onclick="toggleChat()">✕</button>
+  </div>
+  <div id="chat-body" class="chat-body"></div>
+  <div id="chat-sugs" class="chat-sugs"></div>
+  <div class="chat-input">
+    <input id="chat-text" class="input" maxlength="200"
+           placeholder="Escribe tu pregunta…"
+           onkeydown="if(event.key==='Enter')sendChat()">
+    <button class="chat-send" onclick="sendChat()">➤</button>
+  </div>
+</div>
+
   <!-- Preguntas sugeridas (aparecen al escribir en los campos de pregunta) -->
   <datalist id="lista-preguntas">
     <option value="¿Cómo se llama tu primera mascota?"></option>
@@ -853,6 +874,13 @@
   <script src="VetSalud/js/auth.js"></script>
   <script src="VetSalud/js/cliente.js"></script>
   <script src="VetSalud/js/admin.js"></script>
+  <script src="VetSalud/js/db.js"></script>
+  <script src="VetSalud/js/ui.js"></script>
+  <script src="VetSalud/js/auth.js"></script>
+  <script src="VetSalud/js/cliente.js"></script>
+  <script src="VetSalud/js/chatbot.js"></script>  <!-- ✨ NUEVO -->
+  <script src="VetSalud/js/admin.js"></script>
+  <script src="VetSalud/js/app.js"></script>
   <script src="VetSalud/js/app.js"></script>
 
 </body>
